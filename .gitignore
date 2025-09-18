@@ -1,0 +1,8 @@
+*.glob
+*.vo
+*.voc
+*.vos
+*.vok
+.FLT*
+*cache*
+
