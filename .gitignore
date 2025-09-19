@@ -5,4 +5,4 @@
 *.vok
 .FLT*
 *cache*
-
+.DS*

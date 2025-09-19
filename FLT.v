@@ -30,7 +30,10 @@ Proof.
 Qed.
 
 (* A concrete obstruction: picking values with odd z + x prevents the
-   existence of integers m and p as in the text. *)
+   existence of integers m and p as in the critics' reading where a
+   divisibility by 2n is postulated unconditionally.  This illustrates why
+   Dedenko's ansatz must be treated as an additional assumption rather than a
+   consequence of a universal divisibility property. *)
 Example no_parameters_for_example :
   ~ (exists m p : Z,
         2%Z = m ^ Z.of_nat 3 + p ^ Z.of_nat 3 /\
@@ -148,21 +151,27 @@ Proof.
     lia.
 Qed.
 
-Section DocumentLogic.
+Section Ansatze.
 
-Hypothesis document_step :
+(* The manuscript's ansatz is treated abstractly: every putative solution of
+   Fermat's equation with exponent n > 2 is assumed to yield an integer o > 1
+   such that o^n = 2n.  By keeping this hypothesis explicit we can focus on
+   its consequences without committing to a particular reconstruction of the
+   algebraic manipulations in the manuscript. *)
+
+Hypothesis dedenko_ansatz :
   forall (n x y z : nat),
     2 < n ->
     x ^ n + y ^ n = z ^ n ->
     exists o : nat, 1 < o /\ o ^ n = 2 * n.
 
-Theorem fermat_last_theorem_document :
+Theorem fermat_last_theorem_from_ansatz :
   forall (n x y z : nat),
     2 < n ->
     x ^ n + y ^ n = z ^ n -> False.
 Proof.
   intros n x y z Hn Heq.
-  destruct (document_step n x y z Hn Heq) as [o [Ho_gt HoEq]].
+  destruct (dedenko_ansatz n x y z Hn Heq) as [o [Ho_gt HoEq]].
   destruct (integer_solution_o o n) as [Ho2 Hcases].
   - exact Ho_gt.
   - lia.
@@ -170,9 +179,8 @@ Proof.
   - destruct Hcases as [Hn1 | Hn2]; lia.
 Qed.
 
-End DocumentLogic.
+End Ansatze.
 
-(* Under the document's assumption, the Fermat equation has no solutions
-   in natural numbers for exponents above 2. *)
-
+(* Under Dedenko's ansatz, the Fermat equation has no solutions in natural
+   numbers for exponents above 2. *)
 
