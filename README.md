@@ -1,4 +1,4 @@
-# FLT-Coq
+# FLT-Coq 
 ## Check FLT proof
 
 The Coq code is correct; it provides a formalization of FLT that compiles successfully.
