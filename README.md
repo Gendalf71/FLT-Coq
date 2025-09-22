@@ -1,4 +1,4 @@
-# FLT-Coq
+# FLT-Coq (English)
 
 ## Main (conditional) statement
 If one accepts *Dedenko’s Ansatz*:
