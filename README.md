@@ -1,3 +1,23 @@
+# FLT-Coq
+
+**Main (conditional) statement.**  
+If one accepts *Dedenko's Ansatz*  
+> for every $n>2$, any putative solution $x^n+y^n=z^n$ yields an integer $o>1$ with $o^n=2\cdot n$,  
+then the Coq development proves that no such solutions exist (FLT for $n>2$).
+
+**Important:** “$2\cdot n$” denotes the product, not a power. Wherever the manuscript
+uses “2n” as a product, we write “$2\cdot n$” to avoid ambiguity with $2^n$.
+
+## What is formalized
+- The Ansatz is kept as an explicit hypothesis.
+- From $o^n=2\cdot n$ we derive $o=2$ and $n\in\{1,2\}$, hence a contradiction for $n>2$.
+- Parity constraints: from $z:=m^n+p^n$ and $x:=m^n-p^n$ we must have $z\pm x$ even.
+  A general lemma rejects parameterizations when observed parity violates this.
+
+See `FLT.v` and the PDF for details.
+
+---
+
 # FLT-Coq (English)
 
 ## Check FLT proof
@@ -39,3 +59,4 @@ The fully working Coq code is attached, as is the PDF of the reconstructed proof
 ---
 
 Прилагается полностью рабочий код Coq, а также PDF-файл с реконструированным доказательством теоремы Ферма.
+

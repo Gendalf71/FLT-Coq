@@ -1,6 +1,7 @@
-From Coq Require Import Arith Lia ZArith Ring.
+From Coq Require Import Arith Lia ZArith.
 
-Open Scope Z_scope.
+Local Open Scope Z_scope.
+(* This file formalizes the conditional implication: Dedenko's Ansatz ⇒ FLT. *)
 
 (* Algebraic consequences of introducing parameters m and p. *)
 Lemma sum_diff_from_parameters
@@ -29,29 +30,35 @@ Proof.
     rewrite Z.even_mul; simpl; reflexivity.
 Qed.
 
-(* A concrete obstruction: picking values with odd z + x prevents the
-   existence of integers m and p as in the critics' reading where a
-   divisibility by 2n is postulated unconditionally.  This illustrates why
-   Dedenko's ansatz must be treated as an additional assumption rather than a
-   consequence of a universal divisibility property. *)
-Example no_parameters_for_example :
+(* If the observed parity of (z±x) contradicts the necessary evenness
+   implied by the parametrization, then no such integers m,p can exist. *)
+Lemma no_parameters_if_parity_violation (n : nat) (z x : Z) :
+  Z.even (z + x) = false \/ Z.even (z - x) = false ->
+  ~ (exists m p : Z,
+        z = m ^ Z.of_nat n + p ^ Z.of_nat n /\
+        x = m ^ Z.of_nat n - p ^ Z.of_nat n).
+Proof.
+  intros Hpar [m [p [Hz Hx]]].
+  destruct (sum_diff_from_parameters n m p) as [Hsum Hdiff].
+  destruct Hpar as [H1|H2].
+  - rewrite Hz, Hx, Hsum in H1.
+    rewrite Z.even_mul in H1; simpl in H1. discriminate.
+  - rewrite Hz, Hx, Hdiff in H2.
+    rewrite Z.even_mul in H2; simpl in H2. discriminate.
+Qed.
+
+(* A concrete obstruction (special case of the lemma above). *)
+Lemma no_parameters_for_example :
   ~ (exists m p : Z,
         2%Z = m ^ Z.of_nat 3 + p ^ Z.of_nat 3 /\
         1%Z = m ^ Z.of_nat 3 - p ^ Z.of_nat 3).
 Proof.
-  intros [m [p [Hz Hx]]].
-  destruct (sum_diff_from_parameters 3 m p) as [Hsum _].
-  rewrite <- Hz, <- Hx in Hsum.
-  replace (2 + 1)%Z with 3%Z in Hsum by lia.
-  assert (Hodd : Z.even 3 = false) by reflexivity.
-  assert (Heven : Z.even 3 = true).
-  { rewrite Hsum.
-    rewrite Z.even_mul; simpl; reflexivity. }
-  now rewrite Hodd in Heven.
+  apply (no_parameters_if_parity_violation 3 2 1).
+  now left.
 Qed.
 
 Close Scope Z_scope.
-Open Scope nat_scope.
+Local Open Scope nat_scope.
 
 (* Exponential growth compared to linear growth for powers of 2. *)
 Lemma pow2_gt_linear_shift (k : nat) :
@@ -151,19 +158,19 @@ Proof.
     lia.
 Qed.
 
-Section Ansatze.
+(* ------------------------------------------------------------- *)
+(*  Dedenko's Ansatz and the conditional derivation of FLT       *)
+(* ------------------------------------------------------------- *)
+Section Dedenko_Ansatz.
 
-(* The manuscript's ansatz is treated abstractly: every putative solution of
-   Fermat's equation with exponent n > 2 is assumed to yield an integer o > 1
-   such that o^n = 2n.  By keeping this hypothesis explicit we can focus on
-   its consequences without committing to a particular reconstruction of the
-   algebraic manipulations in the manuscript. *)
+(* Abstract statement of the Ansatz (corresponds to the manuscript’s step
+   that produces the equation o^n = 2·n; we keep it explicit as a hypothesis). *)
 
 Hypothesis dedenko_ansatz :
   forall (n x y z : nat),
     2 < n ->
     x ^ n + y ^ n = z ^ n ->
-    exists o : nat, 1 < o /\ o ^ n = 2 * n.
+    exists o : nat, 1 < o /\ o ^ n = 2 * n.  (* “2·n” is product, not a power *)
 
 Theorem fermat_last_theorem_from_ansatz :
   forall (n x y z : nat),
@@ -179,7 +186,7 @@ Proof.
   - destruct Hcases as [Hn1 | Hn2]; lia.
 Qed.
 
-End Ansatze.
+End Dedenko_Ansatz.
 
 (* Under Dedenko's ansatz, the Fermat equation has no solutions in natural
    numbers for exponents above 2. *)
