@@ -1,32 +1,29 @@
 # FLT-Coq
 
-**Main (conditional) statement.**  
-If one accepts *Dedenko’s Ansatz*  
-> for every \(n>2\), any putative solution \(x^n+y^n=z^n\) yields an integer \(o>1\) with \(o^n=2\cdot n\),  
-then the Coq development proves that no such solutions exist (FLT for \(n>2\)).
+## Main (conditional) statement
+If one accepts *Dedenko’s Ansatz*:
+> for every $n>2$, any putative solution $x^n+y^n=z^n$ yields an integer $o>1$ with $o^n=2\cdot n$,
 
-**Nature of the Ansatz (axiom, not theorem).**  
-The Ansatz is an *axiom*, not a theorem. Its value is not that it can be proved inside elementary number theory, but that —once assumed— it forces \(o^n=2\cdot n\) and, via the Coq lemmas in this repo, yields Fermat’s Last Theorem for all \(n>2\).  
+then the Coq development proves that no such solutions exist (FLT for $n>2$).
+
+# Nature of the Ansatz (axiom, not theorem)
+The Ansatz is an *axiom*, not a theorem. Its value is not that it can be proved inside elementary number theory, but that --- once assumed --- it forces $o^n=2\cdot n$ and, via the Coq lemmas in this repo, yields Fermat’s Last Theorem for all $n>2$.
 This project does **not** prove the Ansatz; it isolates it as a single hypothesis under which a short, elementary, “Fermat-style” proof would follow.
 
 ## What is formalized
-
-- The Ansatz is kept as an explicit hypothesis.
-- From \(o^n=2\cdot n\) we derive \(o=2\) and \(n\in\{1,2\}\), hence a contradiction for \(n>2\).
-- Real vs integer parameterizations:
-  - Over **reals** (\(m,p\in\mathbb R\)): `sum_diff_from_parameters_R` gives the algebraic identities \(z+x=2\,m^n\) and \(z-x=2\,p^n\).
-  - Over **integers** (\(m,p\in\mathbb Z\)): `sum_diff_from_parameters_Z` and `parity_condition_Z` imply \(z\pm x\) are even; a general lemma rejects parameterizations when observed parity violates this.
-- Main theorem under the Ansatz: `fermat_last_theorem_from_ansatz`.
-
-See `FLT.v` and the PDFs for details.
+*   The Ansatz is kept as an explicit hypothesis.
+*   From $o^n=2\cdot n$ we derive $o=2$ and $n\in\{1,2\}$, hence a contradiction for $n>2$.
+*   Real vs integer parameterizations:
+    *   Over **reals** ($m,p\in\mathbb{R}$): `sum_diff_from_parameters_R` yields $z+x=2m^n$ and $z-x=2p^n$.
+    *   Over **integers** ($m,p\in\mathbb{Z}$): `sum_diff_from_parameters_Z` and `parity_condition_Z` imply $z\pm x$ are even; a general lemma rejects parameterizations when observed parity violates this.
+*   Main theorem under the Ansatz: `fermat_last_theorem_from_ansatz`.
 
 ## Build & check
-
 ```bash
 coqc FLT.v
 ```
 
-# Code map (text ↔ Coq)
+## Code map (text ↔ Coq)
 *   Real parametrization: `sum_diff_from_parameters_R`
 *   Integer parametrization & parity: `sum_diff_from_parameters_Z`, `parity_condition_Z`
 *   Parity obstruction example: `no_parameters_for_example`
