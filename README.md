@@ -6,7 +6,7 @@ If one accepts *Dedenko’s Ansatz*
 then the Coq development proves that no such solutions exist (FLT for \(n>2\)).
 
 **Nature of the Ansatz (axiom, not theorem).**  
-The Ansatz is an *axiom*, not a theorem. Its value is not that it can be proved inside elementary number theory, but that—once assumed—it forces \(o^n=2\cdot n\) and, via the Coq lemmas in this repo, yields Fermat’s Last Theorem for all \(n>2\).  
+The Ansatz is an *axiom*, not a theorem. Its value is not that it can be proved inside elementary number theory, but that —once assumed— it forces \(o^n=2\cdot n\) and, via the Coq lemmas in this repo, yields Fermat’s Last Theorem for all \(n>2\).  
 This project does **not** prove the Ansatz; it isolates it as a single hypothesis under which a short, elementary, “Fermat-style” proof would follow.
 
 ## What is formalized
@@ -24,7 +24,7 @@ See `FLT.v` and the PDFs for details.
 
 ```bash
 coqc FLT.v
-
+```
 
 # Code map (text ↔ Coq)
 *   Real parametrization: `sum_diff_from_parameters_R`
