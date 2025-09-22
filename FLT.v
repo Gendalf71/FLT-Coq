@@ -1,10 +1,24 @@
-From Coq Require Import Arith Lia ZArith.
+From Coq Require Import Arith Lia Reals ZArith Ring.
 
-Local Open Scope Z_scope.
+Local Open Scope R_scope.
 (* This file formalizes the conditional implication: Dedenko's Ansatz ⇒ FLT. *)
 
-(* Algebraic consequences of introducing parameters m and p. *)
-Lemma sum_diff_from_parameters
+(* Algebraic consequences of introducing parameters m and p in the reals. *)
+Lemma sum_diff_from_parameters_R
+      (n : nat) (m p : R) :
+  let z := pow m n + pow p n in
+  let x := pow m n - pow p n in
+  z + x = 2 * pow m n /\
+  z - x = 2 * pow p n.
+Proof.
+  intros z x; unfold z, x; split; ring.
+Qed.
+
+Close Scope R_scope.
+Local Open Scope Z_scope.
+
+(* Integer specialization used to reason about parity. *)
+Lemma sum_diff_from_parameters_Z
       (n : nat) (m p : Z) :
   let z := m ^ Z.of_nat n + p ^ Z.of_nat n in
   let x := m ^ Z.of_nat n - p ^ Z.of_nat n in
@@ -14,7 +28,7 @@ Proof.
   intros z x; unfold z, x; split; nia.
 Qed.
 
-Corollary parity_condition
+Corollary parity_condition_Z
           (n : nat) (m p : Z) :
   let z := m ^ Z.of_nat n + p ^ Z.of_nat n in
   let x := m ^ Z.of_nat n - p ^ Z.of_nat n in
@@ -22,7 +36,7 @@ Corollary parity_condition
   Z.even (z - x) = true.
 Proof.
   intros z x.
-  destruct (sum_diff_from_parameters n m p) as [Hzx Hzx'].
+  destruct (sum_diff_from_parameters_Z n m p) as [Hzx Hzx'].
   split.
   - replace (z + x) with (2 * m ^ Z.of_nat n) by exact Hzx.
     rewrite Z.even_mul; simpl; reflexivity.
@@ -39,7 +53,7 @@ Lemma no_parameters_if_parity_violation (n : nat) (z x : Z) :
         x = m ^ Z.of_nat n - p ^ Z.of_nat n).
 Proof.
   intros Hpar [m [p [Hz Hx]]].
-  destruct (sum_diff_from_parameters n m p) as [Hsum Hdiff].
+  destruct (sum_diff_from_parameters_Z n m p) as [Hsum Hdiff].
   destruct Hpar as [H1|H2].
   - rewrite Hz, Hx, Hsum in H1.
     rewrite Z.even_mul in H1; simpl in H1. discriminate.
@@ -190,4 +204,3 @@ End Dedenko_Ansatz.
 
 (* Under Dedenko's ansatz, the Fermat equation has no solutions in natural
    numbers for exponents above 2. *)
-
