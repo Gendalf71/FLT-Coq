@@ -1,7 +1,14 @@
 From Coq Require Import Arith Lia Reals ZArith Ring.
 
+(* ============================================================= *)
+(*  This file formalizes the conditional implication:            *)
+(*      Dedenko's Ansatz  ⇒  Fermat's Last Theorem (n>2).        *)
+(*  It keeps the Ansatz as an explicit hypothesis and shows      *)
+(*  that it yields a contradiction for n>2.                      *)
+(* ============================================================= *)
+
+(* ---------- Real-parameter identities (m,p ∈ R) ---------- *)
 Local Open Scope R_scope.
-(* This file formalizes the conditional implication: Dedenko's Ansatz ⇒ FLT. *)
 
 (* Algebraic consequences of introducing parameters m and p in the reals. *)
 Lemma sum_diff_from_parameters_R
@@ -15,6 +22,8 @@ Proof.
 Qed.
 
 Close Scope R_scope.
+
+(* ---------- Integer-parameter specialization (m,p ∈ Z) ---------- *)
 Local Open Scope Z_scope.
 
 (* Integer specialization used to reason about parity. *)
@@ -72,6 +81,8 @@ Proof.
 Qed.
 
 Close Scope Z_scope.
+
+(* ---------- Elementary growth facts on naturals ---------- *)
 Local Open Scope nat_scope.
 
 (* Exponential growth compared to linear growth for powers of 2. *)
@@ -177,9 +188,15 @@ Qed.
 (* ------------------------------------------------------------- *)
 Section Dedenko_Ansatz.
 
+(* -------- Dedenko's Ansatz (axiom) -----------------------------------------
+   STATUS: This is an explicit axiom (not proved in this file).
+   CONTENT: For any n>2, from x^n + y^n = z^n we POSTULATE the existence
+            of an integer o>1 such that o^n = 2 * n (product, not a power).
+   PURPOSE: Under this axiom, the development derives FLT for n>2.
+   NOTE: All results that follow are CONDITIONAL on this axiom. *)
+
 (* Abstract statement of the Ansatz (corresponds to the manuscript’s step
    that produces the equation o^n = 2·n; we keep it explicit as a hypothesis). *)
-
 Hypothesis dedenko_ansatz :
   forall (n x y z : nat),
     2 < n ->
@@ -204,3 +221,4 @@ End Dedenko_Ansatz.
 
 (* Under Dedenko's ansatz, the Fermat equation has no solutions in natural
    numbers for exponents above 2. *)
+
