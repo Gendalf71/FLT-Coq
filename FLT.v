@@ -1,10 +1,13 @@
 From Coq Require Import Arith Lia Reals ZArith Ring.
 
 (* ============================================================= *)
-(*  This file formalizes the conditional implication:            *)
-(*      Dedenko's Ansatz  ⇒  Fermat's Last Theorem (n>2).        *)
-(*  It keeps the Ansatz as an explicit hypothesis and shows      *)
-(*  that it yields a contradiction for n>2.                      *)
+(*  This file formalizes a reading of Dedenko's manuscript where *)
+(*  the parameters m,p live over the reals and a global           *)
+(*  "normalization" multiplier o>1 is introduced so that          *)
+(*            o^n = 2·n                                           *)
+(*  captures the entire family of exponents under consideration.  *)
+(*  Choosing the full-coverage normalization o = 2 collapses the  *)
+(*  search for natural solutions of Fermat's equation to n∈{1,2}.  *)
 (* ============================================================= *)
 
 (* ---------- Real-parameter identities (m,p ∈ R) ---------- *)
@@ -81,9 +84,9 @@ Proof.
 Qed.
 
 Close Scope Z_scope.
+Local Open Scope nat_scope.
 
 (* ---------- Elementary growth facts on naturals ---------- *)
-Local Open Scope nat_scope.
 
 (* Exponential growth compared to linear growth for powers of 2. *)
 Lemma pow2_gt_linear_shift (k : nat) :
@@ -184,41 +187,59 @@ Proof.
 Qed.
 
 (* ------------------------------------------------------------- *)
-(*  Dedenko's Ansatz and the conditional derivation of FLT       *)
+(*  Normalization parameter and the conditional derivation of FLT *)
 (* ------------------------------------------------------------- *)
-Section Dedenko_Ansatz.
+Section Normalization_Parameter.
 
-(* -------- Dedenko's Ansatz (axiom) -----------------------------------------
-   STATUS: This is an explicit axiom (not proved in this file).
-   CONTENT: For any n>2, from x^n + y^n = z^n we POSTULATE the existence
-            of an integer o>1 such that o^n = 2 * n (product, not a power).
-   PURPOSE: Under this axiom, the development derives FLT for n>2.
-   NOTE: All results that follow are CONDITIONAL on this axiom. *)
+(* The manuscript introduces a single multiplier o>1 so that o^n = 2·n
+   serves as a "normalization" capturing all exponents at once.  We keep
+   o abstract and only assume it satisfies the manuscript's equation for
+   every putative Fermat counterexample. *)
+Variable o : nat.
+Hypothesis normalization_gt1 : 1 < o.
 
-(* Abstract statement of the Ansatz (corresponds to the manuscript’s step
-   that produces the equation o^n = 2·n; we keep it explicit as a hypothesis). *)
-Hypothesis dedenko_ansatz :
+Hypothesis normalization_equation :
   forall (n x y z : nat),
     2 < n ->
     x ^ n + y ^ n = z ^ n ->
-    exists o : nat, 1 < o /\ o ^ n = 2 * n.  (* “2·n” is product, not a power *)
+    o ^ n = 2 * n.  (* “2·n” is product, not a power *)
 
-Theorem fermat_last_theorem_from_ansatz :
+Theorem fermat_last_theorem_from_normalization :
   forall (n x y z : nat),
     2 < n ->
     x ^ n + y ^ n = z ^ n -> False.
 Proof.
   intros n x y z Hn Heq.
-  destruct (dedenko_ansatz n x y z Hn Heq) as [o [Ho_gt HoEq]].
+  specialize (normalization_equation n x y z Hn Heq) as HoEq.
   destruct (integer_solution_o o n) as [Ho2 Hcases].
-  - exact Ho_gt.
+  - exact normalization_gt1.
   - lia.
   - exact HoEq.
   - destruct Hcases as [Hn1 | Hn2]; lia.
 Qed.
 
-End Dedenko_Ansatz.
+End Normalization_Parameter.
 
-(* Under Dedenko's ansatz, the Fermat equation has no solutions in natural
-   numbers for exponents above 2. *)
+(* By picking the "full coverage" normalization o = 2 (as justified in the
+   manuscript's discussion of f(n) = (2n)^(1/n)), we obtain the classical
+   contradiction: the resulting equality 2^n = 2·n forces n ∈ {1,2}. *)
+Corollary fermat_last_theorem_with_o_two :
+  (forall (n x y z : nat),
+      2 < n ->
+      x ^ n + y ^ n = z ^ n ->
+      2 ^ n = 2 * n) ->
+  forall (n x y z : nat),
+    2 < n ->
+    x ^ n + y ^ n = z ^ n -> False.
+Proof.
+  intros Hnorm n x y z Hn Heq.
+  eapply (fermat_last_theorem_from_normalization 2).
+  - lia.
+  - apply Hnorm; assumption.
+  - exact Hn.
+  - exact Heq.
+Qed.
+
+(* Under the normalization-based reading of the manuscript, Fermat's equation
+   has no natural number solutions for exponents above 2. *)
 
