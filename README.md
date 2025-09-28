@@ -8,9 +8,8 @@
 
 **Normalization equation (axiom/assumption).**  
 There exists a fixed $o\in\mathbb{N}$ with $o>1$ such that for every $n>2$ and every putative solution in naturals,
-\[
-x^n+y^n=z^n \quad\Longrightarrow\quad o^n = 2\cdot n.
-\]
+
+$x^n+y^n=z^n \quad\Longrightarrow\quad o^n = 2\cdot n.$
 
 **Consequence.**  
 From $o^n=2\cdot n$ alone, elementary growth lemmas yield only the cases $(o,n)=(2,1)$ and $(2,2)$. Therefore no natural solutions to $x^n+y^n=z^n$ can exist for any $n>2$.
@@ -79,9 +78,9 @@ coqc FLT.v
 
 **Гипотеза глобальной нормировки (аксиома/допущение).**  
 Существует фиксированное $o\in\mathbb{N}$, $o>1$, такое что для любого $n>2$ и любой гипотетической натуральной тройки
-\[
-x^n+y^n=z^n \quad\Longrightarrow\quad o^n=2\cdot n.
-\]
+
+$x^n+y^n=z^n \quad\Longrightarrow\quad o^n=2\cdot n.$
+
 
 **Следствие.**  
 Из одного лишь равенства $o^n=2\cdot n$ элементарно следует $(o,n)\in\{(2,1),(2,2)\}$. Значит, для $n>2$ решений уравнения Ферма в натуральных числах не существует.
