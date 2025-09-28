@@ -68,8 +68,8 @@ coqc FLT.v
 
 ## PDFs
 
-- Russian article (latest) in this repository or: [FLT_Poof_Reconstruction_ru.pdf](https://www.researchgate.net/publication/381293382_OSTRYE_UGLY_V_RASSUZDENII_PERA_FERMA_O_NERAZLOZIMOSTI_STEPENI_VYSE_KVADRATA_OBZOR)  
-- English article (latest) in this repository or: [FLT_Poof_Reconstruction_en.pdf](https://doi.org/10.13140/RG.2.2.24342.32321)
+- Russian article (latest) in this repository or: [FLT_Proof_Reconstruction_ru.pdf](https://www.researchgate.net/publication/381293382_OSTRYE_UGLY_V_RASSUZDENII_PERA_FERMA_O_NERAZLOZIMOSTI_STEPENI_VYSE_KVADRATA_OBZOR)  
+- English article (latest) in this repository or: [FLT_Proof_Reconstruction_en.pdf](https://doi.org/10.13140/RG.2.2.24342.32321)
 
 ---
 
