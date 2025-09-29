@@ -3,11 +3,11 @@
 > Coq formalization(s) of a **conditional** route to Fermat’s Last Theorem (FLT) built around the explicit‑base hypothesis **GN(2)**.  
 > The shared single assumption in both variants is:
 >
-> **GN(2).** For any \(n>2\) and any \(x,y,z \in \mathbb{N}\),
+> **GN(2).** For any $n>2$ and any $x,y,z \in \mathbb{N}$,
 >
-> \[x^n + y^n = z^n \ \Rightarrow\ 2^n = 2\cdot n.\]
+> $$x^n + y^n = z^n \ \Rightarrow\ 2^n = 2\cdot n.$$
 >
-> Together with the elementary fact \(2^n > 2\cdot n\) for all \(n \ge 3\), GN(2) gives an immediate contradiction; hence no natural solutions exist for \(n>2\) (FLT). GN(2) is **assumed** (not proved) and is isolated as the single hypothesis.
+> Together with the elementary fact $2^n > 2\cdot n$ for all $n \ge 3$, GN(2) gives an immediate contradiction; hence no natural solutions exist for $n>2$ (FLT). GN(2) is **assumed** (not proved) and is isolated as the single hypothesis.
 
 ---
 
@@ -34,7 +34,7 @@ _Notes_: The current README integrates and replaces the earlier summary to refle
 
 ## What is formalized (shared core)
 
-- **GN(2) core over \(\mathbb{N}\)**  
+- **GN(2) core over $\mathbb{N}$**  
   A predicate `GN2` that encodes the hypothesis
   ```coq
   forall (n x y z : nat),
@@ -42,25 +42,25 @@ _Notes_: The current README integrates and replaces the earlier summary to refle
     Nat.pow x n + Nat.pow y n = Nat.pow z n ->
     2 ^ n = 2 * n.
   ```
-  From `GN2`, the lemma `FLT_from_GN2` derives a contradiction for any putative counterexample with \(n>2\).
+  From `GN2`, the lemma `FLT_from_GN2` derives a contradiction for any putative counterexample with $n>2$.
 
 - **Elementary growth lemmas**  
-  Exponential vs. linear growth (e.g., `2^n > 2·n` for \(n\ge 3\)), and the fact that \(2^n = 2\cdot n\) is possible **only** for \(n \in \{1,2\}\).
+  Exponential vs. linear growth (e.g., `2^n > 2·n` for $n\ge 3$), and the fact that $2^n = 2\cdot n$ is possible **only** for $n \in \{1,2\}$.
 
-- **(Optional) Real “wrapper” and bridge back to \(\mathbb{N}\)**  
-  Identities linking \(\mathbb{R}\) and \(\mathbb{N}\) are provided to phrase GN(2) as a coverage statement over reals and then bridge back to naturals. These are **expository** and can be omitted for the core implication.
+- **(Optional) Real “wrapper” and bridge back to $\mathbb{N}$**  
+  Identities linking $\mathbb{R}$ and $\mathbb{N}$ are provided to phrase GN(2) as a coverage statement over reals and then bridge back to naturals. These are **expository** and can be omitted for the core implication.
 
 
 ## OLD vs NEW (expository focus)
 
 Both variants reach the same conditional implication **GN(2) ⇒ FLT**. They differ by exposition and motivation:
 
-- **OLD**: Emphasizes **real parametrization** \(m,p \in \mathbb{R}\) with the identities  
-  \(z:=m^n+p^n,\ x:=m^n-p^n \Rightarrow z\pm x = 2\cdot m^n,\,2\cdot p^n\),  
-  specialization to \(\mathbb{Z}\) (parity), and consistency checks. These parts **motivate** GN(2) but are **not needed** in the short contradiction once GN(2) is assumed.
+- **OLD**: Emphasizes **real parametrization** $m,p \in \mathbb{R}$ with the identities  
+  $z:=m^n+p^n,\ x:=m^n-p^n \Rightarrow z\pm x = 2\cdot m^n,\,2\cdot p^n$,  
+  specialization to $\mathbb{Z}$ (parity), and consistency checks. These parts **motivate** GN(2) but are **not needed** in the short contradiction once GN(2) is assumed.
 
-- **NEW**: Reframes the motivation around **“full‑coverage normalization at base 2”** and the idea that the **maximal coverage of admissible roots** emerges at the integer normalization \(o=2\). Under this lens, GN(2) codifies the explicit‑base collapse at \(2\), after which the elementary growth lemmas finish the contradiction.  
-  (The Coq core remains the same: GN(2) is a hypothesis; the contradiction for \(n>2\) is mechanical.)
+- **NEW**: Reframes the motivation around **“full‑coverage normalization at base 2”** and the idea that the **maximal coverage of admissible roots** emerges at the integer normalization $o=2$. Under this lens, GN(2) codifies the explicit‑base collapse at $2$, after which the elementary growth lemmas finish the contradiction.  
+  (The Coq core remains the same: GN(2) is a hypothesis; the contradiction for $n>2$ is mechanical.)
 
 - **add-once/**: Presents a **side‑by‑side comparison** and distills working **hypotheses on Fermat’s reasoning**, inferred from the two expositions.
 
@@ -86,7 +86,7 @@ See `add-once/` for the comparison deck and Fermat hypotheses (EN/RU).
 
 ## Scope disclaimer
 
-This project **does not prove GN(2)**. It isolates GN(2) as the **single assumption** under which a short, elementary contradiction to \(x^n + y^n = z^n\) for \(n>2\) follows immediately.
+This project **does not prove GN(2)**. It isolates GN(2) as the **single assumption** under which a short, elementary contradiction to $x^n + y^n = z^n$ for $n>2$ follows immediately.
 
 
 ## Acknowledgements
@@ -99,11 +99,11 @@ We thank colleagues and prior discussions that inspired both expositions and the
 
 > Два близких по идее **условных** подхода к Великой теореме Ферма (ВТФ), оба построены вокруг гипотезы **ГН(2)**:
 >
-> **ГН(2).** Для любого \(n>2\) и любых \(x,y,z \in \mathbb{N}\),
+> **ГН(2).** Для любого $n>2$ и любых $x,y,z \in \mathbb{N}$,
 >
 > \[x^n + y^n = z^n \ \Rightarrow\ 2^n = 2\cdot n.\]
 >
-> Вместе с элементарным фактом \(2^n > 2\cdot n\) при всех \(n \ge 3\) это даёт немедленное противоречие; следовательно, решений в \(\mathbb{N}\) при \(n>2\) нет (ВТФ). ГН(2) **не доказывается**, а выделяется как единственное допущение.
+> Вместе с элементарным фактом $2^n > 2\cdot n$ при всех $n \ge 3$ это даёт немедленное противоречие; следовательно, решений в $\mathbb{N}$ при $n>2$ нет (ВТФ). ГН(2) **не доказывается**, а выделяется как единственное допущение.
 
 ### Структура репозитория
 
@@ -121,13 +121,13 @@ coqc FLT-old.v
 
 ### Пояснения
 
-- **OLD**: акцент на параметризацию \(m,p \in \mathbb{R}\), переход к \(\mathbb{Z}\) и проверки чётности/согласованности. Это мотивация; финальная импликация из ГН(2) не требует этих разделов.
-- **NEW**: акцент на «**нормировке базы 2**» и идее, что **наибольшее покрытие корней** возникает при целочисленной нормировке \(o=2\); далее элементарные оценки роста завершают противоречие.
+- **OLD**: акцент на параметризацию $m,p \in \mathbb{R}$, переход к $\mathbb{Z}$ и проверки чётности/согласованности. Это мотивация; финальная импликация из ГН(2) не требует этих разделов.
+- **NEW**: акцент на «**нормировке базы 2**» и идее, что **наибольшее покрытие корней** возникает при целочисленной нормировке $o=2$; далее элементарные оценки роста завершают противоречие.
 - **add-once/**: компактная «партитура» сравнения и выводы о возможной логике Ферма.
 
 ### Дисклеймер
 
-Проект **не доказывает ГН(2)**, а демонстрирует, как при её принятии ВТФ для \(n>2\) следует немедленно.
+Проект **не доказывает ГН(2)**, а демонстрирует, как при её принятии ВТФ для $n>2$ следует немедленно.
 
 ---
 
