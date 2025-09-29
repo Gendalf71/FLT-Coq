@@ -1,4 +1,4 @@
-# FLT-Coq — Conditional FLT via GN(2): 2^n = 2*n
+# FLT-Coq — Conditional FLT via GN(2): `2^n = 2*n`
 
 > Coq formalization of a **conditional** route to Fermat’s Last Theorem (FLT) based on an explicit-base hypothesis GN(2). The single assumption is:
 >
