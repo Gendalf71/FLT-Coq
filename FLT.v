@@ -1,19 +1,29 @@
-From Coq Require Import Arith Lia Reals ZArith Ring.
+From Coq Require Import Arith Lia Reals ZArith Ring Lra.
 
 (* ============================================================= *)
-(*  This file formalizes a reading of Dedenko's manuscript where *)
-(*  the parameters m,p live over the reals and a global           *)
-(*  "normalization" multiplier o>1 is introduced so that          *)
-(*            o^n = 2·n                                           *)
-(*  captures the entire family of exponents under consideration.  *)
-(*  Choosing the full-coverage normalization o = 2 collapses the  *)
-(*  search for natural solutions of Fermat's equation to n∈{1,2}.  *)
+(*  GN(2) route to FLT (conditional, final formulation).         *)
+(*                                                              *)
+(*  Core hypothesis (GN(2)): for any n>2 and x,y,z ∈ ℕ,          *)
+(*      x^n + y^n = z^n  ⇒  2^n = 2·n.                           *)
+(*  Together with the elementary growth fact                     *)
+(*      2^n = 2·n  ⇒  n ∈ {1,2},                                 *)
+(*  this yields an immediate contradiction for n>2 (FLT).         *)
+(*                                                              *)
+(*  Implementation notes:                                        *)
+(*  - The core proof is purely over naturals (no parameter o).    *)
+(*  - An optional real “wrapper” uses                             *)
+(*        covers_with 2 n  :=  pow 2 n = 2 * INR n               *)
+(*    and bridge lemmas to recover 2^n = 2·n in ℕ.                *)
+(*  - Identities over ℝ/ℤ (parameterization and parity) serve     *)
+(*    only as motivation and are not used in the final step.      *)
+(*                                                              *)
+(*  Legacy “o>1, maximum coverage” formulation is retired.        *)
 (* ============================================================= *)
+
 
 (* ---------- Real-parameter identities (m,p ∈ R) ---------- *)
 Local Open Scope R_scope.
 
-(* Algebraic consequences of introducing parameters m and p in the reals. *)
 Lemma sum_diff_from_parameters_R
       (n : nat) (m p : R) :
   let z := pow m n + pow p n in
@@ -26,10 +36,9 @@ Qed.
 
 Close Scope R_scope.
 
-(* ---------- Integer-parameter specialization (m,p ∈ Z) ---------- *)
+(* ---------- Integer-parameter specialisation (m,p ∈ Z) ---------- *)
 Local Open Scope Z_scope.
 
-(* Integer specialization used to reason about parity. *)
 Lemma sum_diff_from_parameters_Z
       (n : nat) (m p : Z) :
   let z := m ^ Z.of_nat n + p ^ Z.of_nat n in
@@ -56,8 +65,6 @@ Proof.
     rewrite Z.even_mul; simpl; reflexivity.
 Qed.
 
-(* If the observed parity of (z±x) contradicts the necessary evenness
-   implied by the parametrization, then no such integers m,p can exist. *)
 Lemma no_parameters_if_parity_violation (n : nat) (z x : Z) :
   Z.even (z + x) = false \/ Z.even (z - x) = false ->
   ~ (exists m p : Z,
@@ -73,7 +80,21 @@ Proof.
     rewrite Z.even_mul in H2; simpl in H2. discriminate.
 Qed.
 
-(* A concrete obstruction (special case of the lemma above). *)
+Lemma no_parameters_if_odd (n : nat) (z x : Z) :
+  Z.odd (z + x) = true \/ Z.odd (z - x) = true ->
+  ~ (exists m p : Z,
+        z = m ^ Z.of_nat n + p ^ Z.of_nat n /\
+        x = m ^ Z.of_nat n - p ^ Z.of_nat n).
+Proof.
+  intros Hodd [m [p [Hz Hx]]].
+  destruct (sum_diff_from_parameters_Z n m p) as [Hsum Hdiff].
+  destruct Hodd as [H1|H2].
+  - rewrite Hz, Hx, Hsum in H1.
+    rewrite Z.odd_mul in H1; simpl in H1. discriminate.
+  - rewrite Hz, Hx, Hdiff in H2.
+    rewrite Z.odd_mul in H2; simpl in H2. discriminate.
+Qed.
+
 Lemma no_parameters_for_example :
   ~ (exists m p : Z,
         2%Z = m ^ Z.of_nat 3 + p ^ Z.of_nat 3 /\
@@ -84,11 +105,10 @@ Proof.
 Qed.
 
 Close Scope Z_scope.
-Local Open Scope nat_scope.
 
 (* ---------- Elementary growth facts on naturals ---------- *)
+Local Open Scope nat_scope.
 
-(* Exponential growth compared to linear growth for powers of 2. *)
 Lemma pow2_gt_linear_shift (k : nat) :
   2 ^ (k + 3) > 2 * (k + 3).
 Proof.
@@ -139,7 +159,6 @@ Proof.
   - now right.
 Qed.
 
-(* Exponential growth compared to linear growth for powers of 3. *)
 Lemma pow3_gt_linear_shift (k : nat) :
   3 ^ (k + 1) > 2 * (k + 1).
 Proof.
@@ -165,81 +184,71 @@ Proof.
   apply pow3_gt_linear_shift.
 Qed.
 
-(* The equation o^n = 2n with integer o > 1 forces o = 2 and n in {1,2}. *)
-Lemma integer_solution_o (o n : nat) :
-  1 < o -> 1 <= n -> o ^ n = 2 * n -> o = 2 /\ (n = 1 \/ n = 2).
+Lemma covers_two_nat (n : nat) :
+  pow 2 n = INR (2 ^ n).
 Proof.
-  intros Ho Hn HoEq.
-  destruct o as [|o]; [lia|].
-  destruct o as [|o]; [lia|].
-  destruct o as [|o].
-  - (* o = 2 *)
-    simpl in HoEq.
-    split; [reflexivity|].
-    apply pow_eq_linear_positive in HoEq.
-    assumption.
-  - (* o >= 3 leads to contradiction *)
-    assert (Hcomp : 3 ^ n <= (S (S (S o))) ^ n).
-    { apply Nat.pow_le_mono_l; lia. }
-    specialize (pow3_gt_linear n Hn) as Hgt.
-    rewrite HoEq in Hcomp.
-    lia.
+  rewrite pow_INR.
+  reflexivity.
+Qed.
+
+Lemma INR_two_mul_nat (n : nat) :
+  (2 * INR n)%R = INR (2 * n).
+Proof.
+  rewrite mult_INR.
+  simpl.
+  reflexivity.
 Qed.
 
 (* ------------------------------------------------------------- *)
-(*  Normalization parameter and the conditional derivation of FLT *)
+(*  GN(2) ⇒ FLT over naturals, with a real wrapper for coverage  *)
 (* ------------------------------------------------------------- *)
-Section Normalization_Parameter.
 
-(* The manuscript introduces a single multiplier o>1 so that o^n = 2·n
-   serves as a "normalization" capturing all exponents at once.  We keep
-   o abstract and only assume it satisfies the manuscript's equation for
-   every putative Fermat counterexample. *)
-Variable o : nat.
-Hypothesis normalization_gt1 : 1 < o.
+Definition covers_with (o : R) (n : nat) := pow o n = (2 * INR n)%R.
 
-Hypothesis normalization_equation :
+Definition GN2 : Prop :=
   forall (n x y z : nat),
-    2 < n ->
-    x ^ n + y ^ n = z ^ n ->
-    o ^ n = 2 * n.  (* “2·n” is product, not a power *)
+    (2 < n)%nat ->
+    (Nat.pow x n + Nat.pow y n = Nat.pow z n) ->
+    2 ^ n = 2 * n.
 
-Theorem fermat_last_theorem_from_normalization :
+(* ---------- GN(2) core, purely over naturals ---------- *)
+Lemma FLT_from_GN2 :
+  GN2 ->
   forall (n x y z : nat),
-    2 < n ->
-    x ^ n + y ^ n = z ^ n -> False.
+    (2 < n)%nat ->
+    (Nat.pow x n + Nat.pow y n = Nat.pow z n) -> False.
 Proof.
-  intros n x y z Hn Heq.
-  specialize (normalization_equation n x y z Hn Heq) as HoEq.
-  destruct (integer_solution_o o n) as [Ho2 Hcases].
-  - exact normalization_gt1.
-  - lia.
-  - exact HoEq.
-  - destruct Hcases as [Hn1 | Hn2]; lia.
+  intros HGN2 n x y z Hn Heq.
+  specialize (HGN2 n x y z Hn Heq) as Hcover.
+  apply pow_eq_linear_positive in Hcover.
+  lia.
 Qed.
 
-End Normalization_Parameter.
-
-(* By picking the "full coverage" normalization o = 2 (as justified in the
-   manuscript's discussion of f(n) = (2n)^(1/n)), we obtain the classical
-   contradiction: the resulting equality 2^n = 2·n forces n ∈ {1,2}. *)
-Corollary fermat_last_theorem_with_o_two :
-  (forall (n x y z : nat),
-      2 < n ->
-      x ^ n + y ^ n = z ^ n ->
-      2 ^ n = 2 * n) ->
+Definition GN2_R :=
   forall (n x y z : nat),
-    2 < n ->
-    x ^ n + y ^ n = z ^ n -> False.
+    (2 < n)%nat ->
+    (Nat.pow x n + Nat.pow y n = Nat.pow z n) ->
+    pow 2 n = (2 * INR n)%R.
+
+Lemma GN2_R_implies_GN2 : GN2_R -> GN2.
 Proof.
-  intros Hnorm n x y z Hn Heq.
-  eapply (fermat_last_theorem_from_normalization 2).
-  - lia.
-  - apply Hnorm; assumption.
-  - exact Hn.
-  - exact Heq.
+  intros H n x y z Hn Heq.
+  specialize (H n x y z Hn Heq).
+  rewrite covers_two_nat in H.
+  rewrite INR_two_mul_nat in H.
+  apply INR_eq in H.
+  exact H.
 Qed.
 
-(* Under the normalization-based reading of the manuscript, Fermat's equation
-   has no natural number solutions for exponents above 2. *)
+Corollary fermat_last_theorem_from_GN2_R :
+  GN2_R ->
+  forall (n x y z : nat),
+    (2 < n)%nat ->
+    (Nat.pow x n + Nat.pow y n = Nat.pow z n) -> False.
+Proof.
+  intros HGN2R.
+  apply FLT_from_GN2.
+  apply GN2_R_implies_GN2.
+  exact HGN2R.
+Qed.
 

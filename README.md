@@ -1,43 +1,42 @@
-# FLT-Coq — Conditional FLT via “global normalization” $o^n=2\cdot n$ (Dedenko reading)
+# FLT-Coq — Conditional FLT via GN(2): 2^n = 2*n
 
-> This repository contains a Coq formalization of a *conditional* implication extracted from a reading of G. L. Dedenko’s manuscript: **if one assumes a single “global” normalizing factor $o>1$ such that for every putative natural counterexample $x^n+y^n=z^n$ with $n>2$ one has $o^n = 2\cdot n$, then Fermat’s Last Theorem holds for all $n>2$.**
-
----
-
-## Main (conditional) statement
-
-**Normalization equation (axiom/assumption).**  
-There exists a fixed $o\in\mathbb{N}$ with $o>1$ such that for every $n>2$ and every putative solution in naturals,
-
-$x^n+y^n=z^n \quad\Longrightarrow\quad o^n = 2\cdot n.$
-
-**Consequence.**  
-From $o^n=2\cdot n$ alone, elementary growth lemmas yield only the cases $(o,n)=(2,1)$ and $(2,2)$. Therefore no natural solutions to $x^n+y^n=z^n$ can exist for any $n>2$.
-
-This is formalized in Coq as a conditional theorem. The assumption is *not* proved in this project; it is isolated as a single hypothesis under which a short, elementary, “Fermat-style” contradiction follows.
+> Coq formalization of a **conditional** route to Fermat’s Last Theorem (FLT) based on an explicit-base hypothesis GN(2). The single assumption is:
+>
+> **GN(2).** For any n > 2 and any x,y,z ∈ ℕ,
+> 
+> `x^n + y^n = z^n  ⇒  2^n = 2*n`.
+>
+> Together with the elementary fact that `2^n > 2*n` for all `n ≥ 3`, this yields an immediate contradiction; hence no natural solutions exist for `n > 2` (FLT).
+>
+> The assumption GN(2) is not proven here; it is isolated as a single hypothesis under which a short, elementary contradiction follows.
 
 ---
 
 ## What is formalized (Coq)
 
-- **Real vs integer parametrizations**
-  - `sum_diff_from_parameters_R` (over reals): from $z:=m^n+p^n$, $x:=m^n-p^n$ we get $z+x=2\,m^n$ and $z-x=2\,p^n$.
-  - `sum_diff_from_parameters_Z` (over integers) and `parity_condition_Z`: the same identities specialized to $\mathbb{Z}$; in particular $z\pm x$ are even.
-  - `no_parameters_if_parity_violation`: rules out integer parameters when observed parity contradicts the necessary evenness.
-- **Elementary growth lemmas**
-  - `pow2_gt_linear`, `pow3_gt_linear`: exponential vs linear growth.
-  - `integer_solution_o`: if $o>1$ and $o^n=2\cdot n$ with $n\ge 1$, then $(o,n)=(2,1)$ or $(2,2)$.
-- **Global normalization (this reading)**
-  - Section `Normalization_Parameter` introduces a *fixed* $o$ and an abstract hypothesis  
-    `normalization_equation` :
+- **Motivation (algebra over ℝ / parity over ℤ)** — not used in the final step
+  - `sum_diff_from_parameters_R` (over reals): from `z := m^n + p^n`, `x := m^n - p^n` derive `z+x = 2*m^n`, `z-x = 2*p^n`.
+  - `sum_diff_from_parameters_Z`, `parity_condition_Z`: specialisation to integers; in particular `z ± x` are even.
+  - `no_parameters_if_parity_violation`, `no_parameters_if_odd`, `no_parameters_for_example`: rule out integer parameters when parity contradicts the required evenness.
+- **Elementary growth lemmas (used in the core)**
+  - `pow2_gt_linear`, `pow3_gt_linear`: exponential vs. linear growth.
+  - `pow_eq_linear_positive`: from `2^n = 2*n` infer `n ∈ {1,2}`.
+- **GN(2) core over naturals**
+  - `Definition GN2 : Prop` encodes the hypothesis
     ```coq
     forall (n x y z : nat),
-      2 < n -> x^n + y^n = z^n -> o^n = 2 * n.
+      2 < n ->
+      Nat.pow x n + Nat.pow y n = Nat.pow z n ->
+      2 ^ n = 2 * n.
     ```
-  - Main conditional theorem: `fermat_last_theorem_from_normalization` — under the hypothesis above, FLT holds for all $n>2$.
-  - Convenience corollary `fermat_last_theorem_with_o_two`: if one *chooses* the full-coverage normalization $o=2$ across all $n$, then $2^n=2\cdot n$ follows for any putative counterexample, and the same contradiction results.
+  - `FLT_from_GN2`: from `GN2` derive a contradiction for any putative counterexample with `n > 2`.
+- **Real “wrapper” and bridge back to ℕ (optional)**
+  - `covers_two_nat`, `INR_two_mul_nat`: identities linking reals and naturals.
+  - `GN2_R`: real coverage predicate `pow 2 n = 2 * INR n` for any putative counterexample.
+  - `GN2_R_implies_GN2`: bridge from the real predicate to the natural equality.
+  - `fermat_last_theorem_from_GN2_R`: FLT from the real wrapper via the bridge.
 
-**Scope note.** Parity lemmas are provided for completeness but are not needed in the final growth-based contradiction; they document the algebraic consequences of the standard parametrization.
+**Scope note.** The ℝ/ℤ parametrization and parity lemmas document consistency checks and motivation; they are not needed in the final GN(2) ⇒ FLT step.
 
 ---
 
@@ -46,9 +45,8 @@ This is formalized in Coq as a conditional theorem. The assumption is *not* prov
 ```bash
 coqc FLT.v
 ```
-
-- The development compiles without `Admitted`.
-- Tested with Coq’s standard libraries (`Arith`, `Lia`, `Reals`, `ZArith`, `Ring`).
+- Compiles with no `Admitted`.
+- Uses standard Coq libraries (`Arith`, `Lia`, `Reals`, `ZArith`, `Ring`).
 
 ---
 
@@ -58,17 +56,17 @@ coqc FLT.v
 - Integer parametrization & parity: `sum_diff_from_parameters_Z`, `parity_condition_Z`
 - Parity obstruction example: `no_parameters_for_example`
 - Growth lemmas: `pow2_gt_linear`, `pow3_gt_linear`
-- Only trivial solutions of $o^n=2\cdot n$: `integer_solution_o`
-- Global normalization hypothesis: `normalization_equation` (in section `Normalization_Parameter`)
-- FLT from normalization hypothesis: `fermat_last_theorem_from_normalization`
-- Corollary with $o=2$: `fermat_last_theorem_with_o_two`
+- Linear=exponential only for n=1,2: `pow_eq_linear_positive`
+- GN(2) hypothesis over ℕ: `GN2`
+- FLT from GN(2): `FLT_from_GN2`
+- Real wrapper and bridge: `covers_two_nat`, `INR_two_mul_nat`, `GN2_R`, `GN2_R_implies_GN2`, `fermat_last_theorem_from_GN2_R`
 
 ---
 
 ## PDFs
 
-- Russian article (latest) in this repository or: [FLT_Proof_Reconstruction_ru.pdf](https://www.researchgate.net/publication/381293382_OSTRYE_UGLY_V_RASSUZDENII_PERA_FERMA_O_NERAZLOZIMOSTI_STEPENI_VYSE_KVADRATA_OBZOR)  
-- English article (latest) in this repository or: [FLT_Proof_Reconstruction_en.pdf](https://doi.org/10.13140/RG.2.2.24342.32321)
+- Russian (latest): see repository PDFs and: https://www.researchgate.net/publication/381293382_OSTRYE_UGLY_V_RASSUZDENII_PERA_FERMA_O_NERAZLOZIMOSTI_STEPENI_VYSE_KVADRATA_OBZOR
+- English (latest): see repository PDFs and: https://doi.org/10.13140/RG.2.2.24342.32321
 
 ---
 
@@ -76,39 +74,33 @@ coqc FLT.v
 
 ## Главная (условная) формулировка
 
-**Гипотеза глобальной нормировки (аксиома/допущение).**  
-Существует фиксированное $o\in\mathbb{N}$, $o>1$, такое что для любого $n>2$ и любой гипотетической натуральной тройки
+**ГН(2).** Для любого `n > 2` и любых `x,y,z ∈ ℕ`
 
-$x^n+y^n=z^n \quad\Longrightarrow\quad o^n=2\cdot n.$
+`x^n + y^n = z^n  ⇒  2^n = 2*n`.
 
+Вместе с элементарным фактом `2^n > 2*n` для всех `n ≥ 3` это даёт немедленное противоречие; следовательно, решений в натуральных числах при `n > 2` не существует (ВТФ).
 
-**Следствие.**  
-Из одного лишь равенства $o^n=2\cdot n$ элементарно следует $(o,n)\in\{(2,1),(2,2)\}$. Значит, для $n>2$ решений уравнения Ферма в натуральных числах не существует.
-
-Это утверждение формализовано в Coq как условная теорема. Допущение **не** доказывается в проекте; оно выделено как единственная гипотеза, из которой коротко получается противоречие «в ферматовском стиле».
+Гипотеза ГН(2) здесь не доказывается; это единственное допущение, из которого коротко получается противоречие.
 
 ---
 
 ## Что формализовано (Coq)
 
-- **Параметризации над $\mathbb{R}$ и $\mathbb{Z}$**
-  - `sum_diff_from_parameters_R`: из $z:=m^n+p^n$, $x:=m^n-p^n$ получаем $z+x=2\,m^n$, $z-x=2\,p^n$ (над $\mathbb{R}$).
-  - `sum_diff_from_parameters_Z`, `parity_condition_Z`: те же равенства над $\mathbb{Z}$; в частности $z\pm x$ чётны.
-  - `no_parameters_if_parity_violation`: исключает целочисленные параметры при несоответствии наблюдаемой чётности необходимой.
-- **Элементарные оценки роста**
-  - `pow2_gt_linear`, `pow3_gt_linear`: экспонента против линейной функции.
-  - `integer_solution_o`: если $o>1$ и $o^n=2\cdot n$ ($n\ge 1$), то $(o,n)=(2,1)$ или $(2,2)$.
-- **Глобальная нормировка (данное прочтение)**
-  - В разделе `Normalization_Parameter` вводится фиксированное $o$ и абстрактная гипотеза  
-    `normalization_equation` :
-    ```coq
-    forall (n x y z : nat),
-      2 < n -> x^n + y^n = z^n -> o^n = 2 * n.
-    ```
-  - Главная условная теорема: `fermat_last_theorem_from_normalization` — при этой гипотезе ВТФ верна для всех $n>2$.
-  - Удобная королларий `fermat_last_theorem_with_o_two`: если *выбрать* нормировку $o=2$ для всех $n$, то из любой гипотетической контрпримерной тройки следует $2^n=2\cdot n$ и получается то же противоречие.
-
-**Замечание о роли чётности.** Леммы о чётности включены для полноты картины следствий стандартной параметризации; в последнем шаге доказательства они не используются — достаточно сравнений роста.
+- **Мотивация (алгебра над ℝ / чётность над ℤ)** — в финальном шаге не используется
+  - `sum_diff_from_parameters_R`: из `z := m^n + p^n`, `x := m^n - p^n` получаем `z+x = 2*m^n`, `z-x = 2*p^n`.
+  - `sum_diff_from_parameters_Z`, `parity_condition_Z`: специализация на целые; в частности `z ± x` чётны.
+  - `no_parameters_if_parity_violation`, `no_parameters_if_odd`, `no_parameters_for_example`: исключают параметры при несогласованной чётности.
+- **Элементарные леммы роста (используются в ядре)**
+  - `pow2_gt_linear`, `pow3_gt_linear`: экспонента против линейной.
+  - `pow_eq_linear_positive`: из `2^n = 2*n` следует `n ∈ {1,2}`.
+- **Ядро ГН(2) над натуральными**
+  - `GN2` — гипотеза в терминах ℕ (см. код выше).
+  - `FLT_from_GN2` — из `GN2` получаем противоречие при любом `n > 2`.
+- **Вещественная “оболочка” и мост обратно в ℕ (опционально)**
+  - `covers_two_nat`, `INR_two_mul_nat`: связи ℝ ↔ ℕ.
+  - `GN2_R`: предикат покрытия `pow 2 n = 2 * INR n` для любого гипотетического контрпримера.
+  - `GN2_R_implies_GN2`: мост к равенству в ℕ.
+  - `fermat_last_theorem_from_GN2_R`: ВТФ из вещественной оболочки через мост.
 
 ---
 
@@ -117,7 +109,6 @@ $x^n+y^n=z^n \quad\Longrightarrow\quad o^n=2\cdot n.$
 ```bash
 coqc FLT.v
 ```
-
 - Компилируется без `Admitted`.
 - Используются стандартные библиотеки Coq (`Arith`, `Lia`, `Reals`, `ZArith`, `Ring`).
 
@@ -125,15 +116,15 @@ coqc FLT.v
 
 ## Соответствие текст ↔ Coq
 
-- Параметризация над $\mathbb{R}$: `sum_diff_from_parameters_R`
-- Параметризация и чётность над $\mathbb{Z}$: `sum_diff_from_parameters_Z`, `parity_condition_Z`
+- Параметризация над ℝ: `sum_diff_from_parameters_R`
+- Параметризация и чётность над ℤ: `sum_diff_from_parameters_Z`, `parity_condition_Z`
 - Пример препятствия по чётности: `no_parameters_for_example`
 - Леммы роста: `pow2_gt_linear`, `pow3_gt_linear`
-- Тривиальные решения $o^n=2\cdot n$: `integer_solution_o`
-- Гипотеза глобальной нормировки: `normalization_equation` (в разделе `Normalization_Parameter`)
-- ВТФ из гипотезы нормировки: `fermat_last_theorem_from_normalization`
-- Королларий при $o=2$: `fermat_last_theorem_with_o_two`
+- Равенство 2^n = 2*n только при n=1,2: `pow_eq_linear_positive`
+- Гипотеза ГН(2) над ℕ: `GN2`
+- ВТФ из ГН(2): `FLT_from_GN2`
+- Вещественная оболочка и мост: `covers_two_nat`, `INR_two_mul_nat`, `GN2_R`, `GN2_R_implies_GN2`, `fermat_last_theorem_from_GN2_R`
 
 ---
 
-© 2025. Conditional formalization “global normalization ⇒ FLT” (Dedenko reading).
+© 2025. Conditional formalization “GN(2) ⇒ FLT”.
