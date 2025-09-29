@@ -101,7 +101,7 @@ We thank colleagues and prior discussions that inspired both expositions and the
 >
 > **ГН(2).** Для любого $n>2$ и любых $x,y,z \in \mathbb{N}$,
 >
-> \[x^n + y^n = z^n \ \Rightarrow\ 2^n = 2\cdot n.\]
+> $$x^n + y^n = z^n \ \Rightarrow\ 2^n = 2\cdot n.\$$
 >
 > Вместе с элементарным фактом $2^n > 2\cdot n$ при всех $n \ge 3$ это даёт немедленное противоречие; следовательно, решений в $\mathbb{N}$ при $n>2$ нет (ВТФ). ГН(2) **не доказывается**, а выделяется как единственное допущение.
 
