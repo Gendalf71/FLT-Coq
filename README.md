@@ -70,19 +70,26 @@ GitHub Actions builds inside Docker on `coqorg/coq:8.18.0`; artifacts (`.vo/.glo
 ## Project structure
 ```
 .
-├─ FLT_new.v      # Track B: GN(2)
-├─ FLT_old.v      # Track A: Coverage parameter (o>1)
-├─ README.md
-├─ CITATION.cff
+├─ add-once/
+├─ new/
+│  ├─ Dedenko_FLT_Description_en.pdf
+│  ├─ FLT_Proof_Reconstruction_en.pdf
+│  └─ Dedenko_FLT_Coq_README.pdf
+├─ old/
+│  ├─ Dedenko_FLT_Description_old_en.pdf
+│  ├─ FLT_Proof_Reconstruction_old_en.pdf
+│  └─ Dedenko_FLT_Coq_README_old.pdf
+├─ FLT-new.v
+├─ FLT-old.v
+├─ FLT.v
+├─ FLT_Coq_compile_result.png
+├─ Makefile
+├─ .coqproject
+├─ .gitignore
 ├─ LICENSE
-├─ .coqproject / Makefile (optional)
-└─ docs/
-   ├─ Dedenko_FLT_Description_old_en.pdf
-   ├─ FLT_Proof_Reconstruction_old_en.pdf
-   ├─ Dedenko_FLT_Coq_README_old.pdf
-   ├─ Dedenko_FLT_Description_en.pdf
-   ├─ FLT_Proof_Reconstruction_en.pdf
-   └─ Dedenko_FLT_Coq_README.pdf
+├─ CITATION.cff
+├─ coq.yml
+└─ README.md
 ```
 
 ---
