@@ -15,7 +15,7 @@
 
 ## Tracks overview
 
-### Track A — Coverage parameter (global normalizer $o>1$)  — **file:** `FLT-old.v`
+### Track A — Coverage parameter (global normalizer $o>1$)  — **file:** `FLT_old.v`
 
 - Postulates a single real $o>1$ (global normalizer) such that any putative solution with $n>2$ forces a **coverage identity** $o^n = 2\cdot \mathrm{INR}(n)$; with **maximum coverage** the same $o$ covers exactly $n\in\{1,2\}$.  
 - Coq proves $o=2$ and that $o^n=2\cdot n$ implies $n\in\{1,2\}$, yielding a contradiction for $n>2$.  
@@ -32,7 +32,7 @@
 
 ---
 
-### Track B — Explicit base **GN(2)**  — **file:** `FLT-new.v`
+### Track B — Explicit base **GN(2)**  — **file:** `FLT_new.v`
 
 - **GN(2):** for any putative natural solution with $n>2$, **postulate** $2^n = 2\cdot n$.  
 - Coq shows $2^n = 2\cdot n \Rightarrow n\in\{1,2\}$ via elementary growth lemmas; contradiction for $n>2$ ⇒ **FLT**.  
@@ -50,36 +50,32 @@ Also: `fermat_last_theorem_from_GN2_R` (via real wrapper).
 
 ## Quick start
 
-**A) Docker (no local install):**
+**A) Docker (no local install, matches CI — Coq $8.18.0$):**
 ```bash
-docker run --rm -v "$PWD":/coq -w /coq coqorg/coq:8.20.1 \
-  bash -lc 'coqc -Q . "" FLT-new.v && coqc -Q . "" FLT-old.v'
+docker run --rm -v "$PWD":/coq -w /coq coqorg/coq:8.18.0 \
+  bash -lc 'coqc -Q . "" FLT_new.v && coqc -Q . "" FLT_old.v'
 ```
 
-**B) Local (Coq ≥ 8.19):**
+**B) Local (Coq $\ge 8.18$):**
 ```bash
-make           # builds *.vo (both tracks)
-make clean
+coqc -Q . "" FLT_new.v
+coqc -Q . "" FLT_old.v
 ```
 
 **C) CI**  
-Push/PR triggers GitHub Actions (see `.github/workflows/coq.yml`) which:
-1) build on `coqorg/coq:8.19.2` and `8.20.1`;  
-2) compile **both** `FLT-new.v` (GN(2)) and `FLT-old.v` (coverage);  
-3) fail if any `Admitted.` remain.
+GitHub Actions builds inside Docker on `coqorg/coq:8.18.0`; artifacts (`.vo/.glob`) are written to `/tmp`, so the repository stays clean. The workflow fails if any `Admitted.` remain.
 
 ---
 
 ## Project structure
 ```
 .
-├─ FLT-new.v      # Track B: GN(2)
-├─ FLT-old.v      # Track A: Coverage parameter (o>1)
-├─ Makefile
-├─ .coqproject
-├─ .github/workflows/coq.yml
+├─ FLT_new.v      # Track B: GN(2)
+├─ FLT_old.v      # Track A: Coverage parameter (o>1)
+├─ README.md
 ├─ CITATION.cff
 ├─ LICENSE
+├─ .coqproject / Makefile (optional)
 └─ docs/
    ├─ Dedenko_FLT_Description_old_en.pdf
    ├─ FLT_Proof_Reconstruction_old_en.pdf
@@ -95,10 +91,10 @@ Push/PR triggers GitHub Actions (see `.github/workflows/coq.yml`) which:
 
 | Article item (new PDFs) | Coq lemma / theorem |
 |---|---|
-| Algebraic parametrization over **R**; integer parity facts over **Z** | `sum_diff_from_parameters_R`, `sum_diff_from_parameters_Z`, `parity_condition_Z` |
-| GN(2) hypothesis over **N** | `GN2` |
+| Algebraic parametrization over $\mathbb{R}$; integer parity facts over $\mathbb{Z}$ | `sum_diff_from_parameters_R`, `sum_diff_from_parameters_Z`, `parity_condition_Z` |
+| GN(2) hypothesis over $\mathbb{N}$ | `GN2` |
 | Growth vs. linear; from $2^n = 2\cdot n$ infer $n\in\{1,2\}$ | `pow2_gt_linear`, `pow3_gt_linear`, `pow_eq_linear_positive` |
-| Real wrapper and bridge back to **N** | `GN2_R`, `covers_two_nat`, `INR_two_mul_nat`, `GN2_R_implies_GN2` |
+| Real wrapper and bridge back to $\mathbb{N}$ | `GN2_R`, `covers_two_nat`, `INR_two_mul_nat`, `GN2_R_implies_GN2` |
 | FLT from GN(2) (direct) / via real wrapper | `FLT_from_GN2` / `fermat_last_theorem_from_GN2_R` |
 
 ---
@@ -107,7 +103,7 @@ Push/PR triggers GitHub Actions (see `.github/workflows/coq.yml`) which:
 
 | Article item (old PDFs) | Coq lemma / theorem |
 |---|---|
-| Algebraic parametrization over **R**; integer parity facts over **Z** | `sum_diff_from_parameters_R`, `sum_diff_from_parameters_Z`, `parity_condition_Z` |
+| Algebraic parametrization over $\mathbb{R}$; integer parity facts over $\mathbb{Z}$ | `sum_diff_from_parameters_R`, `sum_diff_from_parameters_Z`, `parity_condition_Z` |
 | Coverage predicate and bridge to naturals | `covers_with`, `covers_two_nat`, `INR_two_mul_nat` |
 | Growth vs. linear; from $o^n = 2\cdot n$ infer $n\in\{1,2\}$ | `pow2_gt_linear`, `pow3_gt_linear`, `pow_eq_linear_positive` |
 | Global normalization & maximum coverage (hypotheses/section) | `normalization_gt1`, `maximum_coverage`, `normalization_equation` |
@@ -129,6 +125,7 @@ Push/PR triggers GitHub Actions (see `.github/workflows/coq.yml`) which:
 ## Cite / Как ссылаться
 
 See `CITATION.cff` (GitHub/Zenodo).
+
 ## License
 
 BSD-3-Clause — см. `LICENSE`.
