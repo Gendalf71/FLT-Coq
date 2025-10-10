@@ -1,8 +1,8 @@
 COQC ?= coqc
 COQFLAGS ?= -Q . ""
 
-# Two-track build (adjust file names if needed)
-VFILES := FLT-new.v FLT-old.v
+# Two-track build (underscore names)
+VFILES := FLT_new.v FLT_old.v
 VOFILES := $(VFILES:.v=.vo)
 
 all: $(VOFILES)
