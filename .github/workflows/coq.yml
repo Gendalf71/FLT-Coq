@@ -1,24 +1,29 @@
-name: Coq CI (Single Docker Non-Root 8.20.1)
+name: Coq CI (docker-coq-action matrix)
 on:
   push:
   pull_request:
 jobs:
   build:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        image: [ 'coqorg/coq:8.19.2', 'coqorg/coq:8.20.1' ]
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 1
 
-      - name: Build in Docker as non-root
-        shell: bash
-        run: |
-          set -euxo pipefail
-          uid=$(id -u)
-          gid=$(id -g)
-          docker run --rm -u "$uid:$gid" -v "${{ github.workspace }}:/coq" -w /coq coqorg/coq:8.20.1             bash -lc 'which coqc && coqc -v && coqc -Q . "" FLT_new.v && coqc -Q . "" FLT_old.v'
-
-      - name: Fail if any Admitted remain
-        run: |
-          if grep -R -n --include="*.v" 'Admitted\.' .; then
-            echo "::error::Found Admitted"; exit 1; fi
+      - name: Build with docker-coq-action
+        uses: coq-community/docker-coq-action@v1
+        with:
+          opam_image: ${{ matrix.image }}
+          custom_script: |
+            set -euxo pipefail
+            coqc -v
+            # Fail if any Admitted remain
+            if grep -R -n --include="*.v" 'Admitted\.' .; then
+              echo "ERROR: Found Admitted."; exit 1; fi
+            # Build both tracks
+            coqc -Q . "" FLT_new.v
+            coqc -Q . "" FLT_old.v
