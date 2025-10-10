@@ -6,19 +6,19 @@
 
 > **Scope disclaimer / Дисклеймер:**  
 > This repository formalizes **two closely-related conditional strategies** to derive FLT in Coq.  
-> **Track A — Coverage parameter (global normalizer \(o>1\))** with a *maximum-coverage* principle.  
-> **Track B — Explicit-base GN(2)**: for any putative \(n>2\) counterexample, postulate \(2^n = 2\cdot n\).  
+> **Track A — Coverage parameter (global normalizer $o>1$)** with a *maximum-coverage* principle.  
+> **Track B — Explicit-base GN(2)**: for any putative $n>2$ counterexample, postulate $2^n = 2\cdot n$.  
 > In both tracks, the extra premise is **assumed (not proven)**; Coq verifies the downstream implication to **FLT**.  
-> Репозиторий содержит **две тактики**: A) параметр покрытия \(o>1\) с принципом максимального покрытия; B) явная гипотеза **GN(2)**. В обоих случаях допущение **принимается**, а Coq проверяет вывод к **ВТФ**.
+> Репозиторий содержит **две тактики**: A) параметр покрытия $o>1$ с принципом максимального покрытия; B) явная гипотеза **GN(2)**. В обоих случаях допущение **принимается**, а Coq проверяет вывод к **ВТФ**.
 
 ---
 
 ## Tracks overview
 
-### Track A — Coverage parameter (global normalizer \(o>1\))  — **file:** `FLT-old.v`
+### Track A — Coverage parameter (global normalizer $o>1$)  — **file:** `FLT-old.v`
 
-- Postulates a single real \(o>1\) (global normalizer) such that any putative solution with \(n>2\) forces a **coverage identity** \(o^n = 2\cdot \mathrm{INR}(n)\); with **maximum coverage** the same \(o\) covers exactly \(n\in\{1,2\}\).  
-- Coq proves \(o=2\) and that \(o^n=2\cdot n\) implies \(n\in\{1,2\}\), yielding a contradiction for \(n>2\).  
+- Postulates a single real $o>1$ (global normalizer) such that any putative solution with $n>2$ forces a **coverage identity** $o^n = 2\cdot \mathrm{INR}(n)$; with **maximum coverage** the same $o$ covers exactly $n\in\{1,2\}$.  
+- Coq proves $o=2$ and that $o^n=2\cdot n$ implies $n\in\{1,2\}$, yielding a contradiction for $n>2$.  
 - Rationale & mapping are documented in the *old* PDFs (`*_old_*.pdf`).
 
 **Key Coq ingredients (names may vary slightly):**  
@@ -34,9 +34,9 @@
 
 ### Track B — Explicit base **GN(2)**  — **file:** `FLT-new.v`
 
-- **GN(2):** for any putative natural solution with \(n>2\), **postulate** \(2^n = 2\cdot n\).  
-- Coq shows \(2^n = 2\cdot n \Rightarrow n\in\{1,2\}\) via elementary growth lemmas; contradiction for \(n>2\) ⇒ **FLT**.  
-- A real “wrapper” \(2^n = 2\cdot\mathrm{INR}(n)\) and bridge lemmas connect \(\mathbb{R}\) and \(\mathbb{N}\).  
+- **GN(2):** for any putative natural solution with $n>2$, **postulate** $2^n = 2\cdot n$.  
+- Coq shows $2^n = 2\cdot n \Rightarrow n\in\{1,2\}$ via elementary growth lemmas; contradiction for $n>2$ ⇒ **FLT**.  
+- A real “wrapper” $2^n = 2\cdot\mathrm{INR}(n)$ and bridge lemmas connect $\mathbb{R}$ and $\mathbb{N}$.  
 - Rationale & mapping are documented in the *new* PDFs (без `old`).
 
 **Key Coq ingredients:**  
@@ -44,7 +44,7 @@
 Also: `fermat_last_theorem_from_GN2_R` (via real wrapper).
 
 > **Motivation vs proof / Мотивация vs доказательство.**  
-> Параметризация \(z:=m^n+p^n,\ x:=m^n-p^n\) и паритетные факты включены как мотивация/проверки согласованности и **не используются** в финальном шаге обеих дорожек.
+> Параметризация $z:=m^n+p^n,\ x:=m^n-p^n$ и паритетные факты включены как мотивация/проверки согласованности и **не используются** в финальном шаге обеих дорожек.
 
 ---
 
@@ -97,7 +97,7 @@ Push/PR triggers GitHub Actions (see `.github/workflows/coq.yml`) which:
 |---|---|
 | Algebraic parametrization over **R**; integer parity facts over **Z** | `sum_diff_from_parameters_R`, `sum_diff_from_parameters_Z`, `parity_condition_Z` |
 | GN(2) hypothesis over **N** | `GN2` |
-| Growth vs. linear; from \(2^n = 2\cdot n\) infer \(n\in\{1,2\}\) | `pow2_gt_linear`, `pow3_gt_linear`, `pow_eq_linear_positive` |
+| Growth vs. linear; from $2^n = 2\cdot n$ infer $n\in\{1,2\}$ | `pow2_gt_linear`, `pow3_gt_linear`, `pow_eq_linear_positive` |
 | Real wrapper and bridge back to **N** | `GN2_R`, `covers_two_nat`, `INR_two_mul_nat`, `GN2_R_implies_GN2` |
 | FLT from GN(2) (direct) / via real wrapper | `FLT_from_GN2` / `fermat_last_theorem_from_GN2_R` |
 
@@ -109,17 +109,17 @@ Push/PR triggers GitHub Actions (see `.github/workflows/coq.yml`) which:
 |---|---|
 | Algebraic parametrization over **R**; integer parity facts over **Z** | `sum_diff_from_parameters_R`, `sum_diff_from_parameters_Z`, `parity_condition_Z` |
 | Coverage predicate and bridge to naturals | `covers_with`, `covers_two_nat`, `INR_two_mul_nat` |
-| Growth vs. linear; from \(o^n = 2\cdot n\) infer \(n\in\{1,2\}\) | `pow2_gt_linear`, `pow3_gt_linear`, `pow_eq_linear_positive` |
+| Growth vs. linear; from $o^n = 2\cdot n$ infer $n\in\{1,2\}$ | `pow2_gt_linear`, `pow3_gt_linear`, `pow_eq_linear_positive` |
 | Global normalization & maximum coverage (hypotheses/section) | `normalization_gt1`, `maximum_coverage`, `normalization_equation` |
-| Consequences: \(o=2\) and contradiction for \(n>2\) | `normalization_parameter_is_two`, `normalization_forces_small_exponent` |
-| Explicit realisation with \(o=2\); final FLT corollaries | `covers_two_one`, `covers_two_two`, `covers_two_only_small`, `fermat_last_theorem_from_global_normalization`, `fermat_last_theorem_via_maximum_coverage` |
+| Consequences: $o=2$ and contradiction for $n>2$ | `normalization_parameter_is_two`, `normalization_forces_small_exponent` |
+| Explicit realisation with $o=2$; final FLT corollaries | `covers_two_one`, `covers_two_two`, `covers_two_only_small`, `fermat_last_theorem_from_global_normalization`, `fermat_last_theorem_via_maximum_coverage` |
 
 ---
 
 ## Mathematical notes (brief)
 
-- Core comparisons are elementary growth inequalities showing that an equality of the form “exponential = linear (in \(n\))” forces \(n\in\{1,2\}\).  
-- Track A assumes a **coverage identity** \(o^n = 2\cdot \mathrm{INR}(n)\) induced by any counterexample with a *fixed* \(o>1\) and imposes **maximum coverage**; Track B assumes **GN(2)** directly.
+- Core comparisons are elementary growth inequalities showing that an equality of the form “exponential = linear (in $n$)” forces $n\in\{1,2\}$.  
+- Track A assumes a **coverage identity** $o^n = 2\cdot \mathrm{INR}(n)$ induced by any counterexample with a *fixed* $o>1$ and imposes **maximum coverage**; Track B assumes **GN(2)** directly.
 
 **Limitations / Ограничения.**  
 Ни в одной дорожке допущение не доказывается внутри репозитория; Coq проверяет **следствие** к FLT при указанных предпосылках. Паритет/параметризация — мотивация, не задействованы в финальном шаге.
@@ -128,7 +128,7 @@ Push/PR triggers GitHub Actions (see `.github/workflows/coq.yml`) which:
 
 ## Cite / Как ссылаться
 
-See `CITATION.cff` (GitHub/Zenodo). После первого релиза Zenodo замените DOI в бейдже.
+See `CITATION.cff` (GitHub/Zenodo).
 
 ## License
 
