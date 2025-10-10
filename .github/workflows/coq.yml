@@ -1,4 +1,4 @@
-name: Coq CI (docker-coq-action, Coq 8.18.0, tmp outputs)
+name: Coq CI (docker-coq-action, Coq 8.18.0, tmp outputs, no uninstall)
 on:
   push:
   pull_request:
@@ -14,6 +14,8 @@ jobs:
         uses: coq-community/docker-coq-action@v1
         with:
           custom_image: coqorg/coq:8.18.0
+          uninstall: false
+          export: ""
           script: |
             set -eux
             coqc --version
