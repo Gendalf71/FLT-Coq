@@ -1,4 +1,4 @@
-name: Coq CI (docker-coq-action matrix)
+name: Coq CI (docker-coq-action)
 on:
   push:
   pull_request:
@@ -17,9 +17,9 @@ jobs:
       - name: Build with docker-coq-action
         uses: coq-community/docker-coq-action@v1
         with:
-          opam_image: ${{ matrix.image }}
-          custom_script: |
-            set -euxo pipefail
+          custom_image: ${{ matrix.image }}
+          script: |
+            set -eux
             coqc -v
             # Fail if any Admitted remain
             if grep -R -n --include="*.v" 'Admitted\.' .; then
