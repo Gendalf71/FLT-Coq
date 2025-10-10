@@ -1,7 +1,7 @@
 COQC ?= coqc
 COQFLAGS ?= -Q . ""
 
-# Track B (GN2) + Track A (Coverage)
+# Two-track build (adjust file names if needed)
 VFILES := FLT-new.v FLT-old.v
 VOFILES := $(VFILES:.v=.vo)
 
@@ -21,4 +21,3 @@ clean:
 	rm -f *.vo *.glob
 
 .PHONY: all clean test
-

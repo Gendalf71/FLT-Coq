@@ -129,7 +129,6 @@ Push/PR triggers GitHub Actions (see `.github/workflows/coq.yml`) which:
 ## Cite / Как ссылаться
 
 See `CITATION.cff` (GitHub/Zenodo).
-
 ## License
 
 BSD-3-Clause — см. `LICENSE`.

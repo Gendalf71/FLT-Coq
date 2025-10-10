@@ -1,8 +1,3 @@
-
----
-
-### `.github/workflows/coq.yml`
-```yaml
 name: Coq CI
 
 on:
@@ -19,20 +14,15 @@ jobs:
       image: ${{ matrix.coq_image }}
     steps:
       - uses: actions/checkout@v4
-
       - name: Show Coq version
         run: coqc -v
-
       - name: Build Track B (GN2) — FLT-new.v
         run: coqc -Q . "" FLT-new.v
-
       - name: Build Track A (Coverage) — FLT-old.v
         run: coqc -Q . "" FLT-old.v
-
       - name: Fail if any Admitted remain
         run: |
           if grep -R -n --include="*.v" "Admitted\." . ; then
             echo "::error file=*,title=Found Admitted::Please remove Admitted.";
             exit 1;
           fi
-
