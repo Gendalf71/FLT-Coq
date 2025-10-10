@@ -1,23 +1,21 @@
-name: Coq CI
+name: Coq CI (Docker)
 on:
   push:
   pull_request:
 jobs:
   build:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        coq_image: [coqorg/coq:8.19.2, coqorg/coq:8.20.1]
-    container:
-      image: ${{ matrix.coq_image }}
     steps:
       - uses: actions/checkout@v4
-      - name: Show Coq version
-        run: coqc -v
-      - name: Build FLT-new.v (Track B GN2)
-        run: coqc FLT-new.v
-      - name: Build FLT-old.v (Track A Coverage)
-        run: coqc FLT-old.v
+
+      - name: Build FLT-new.v (Docker, Coq 8.20.1)
+        run: |
+          docker run --rm -v "${{ github.workspace }}:/coq" -w /coq coqorg/coq:8.20.1             bash -lc 'coqc -Q . "" FLT-new.v'
+
+      - name: Build FLT-old.v (Docker, Coq 8.20.1)
+        run: |
+          docker run --rm -v "${{ github.workspace }}:/coq" -w /coq coqorg/coq:8.20.1             bash -lc 'coqc -Q . "" FLT-old.v'
+
       - name: Fail if any Admitted remain
         run: |
           if grep -R -n --include="*.v" 'Admitted\.' .; then
