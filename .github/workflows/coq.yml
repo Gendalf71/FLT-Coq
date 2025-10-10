@@ -1,4 +1,4 @@
-name: Coq CI (docker-coq-action, Coq 8.18.0, tmp outputs, no uninstall)
+name: Coq CI (Docker 8.18.0, tmp outputs)
 on:
   push:
   pull_request:
@@ -10,19 +10,18 @@ jobs:
         with:
           fetch-depth: 1
 
-      - name: Build with docker-coq-action (Coq 8.18.0)
-        uses: coq-community/docker-coq-action@v1
-        with:
-          custom_image: coqorg/coq:8.18.0
-          uninstall: false
-          export: ""
-          script: |
+      - name: Build inside Docker (load opam env, write to /tmp)
+        shell: bash
+        run: |
+          set -euxo pipefail
+          docker run --rm -v "${{ github.workspace }}:/coq:ro" coqorg/coq:8.18.0 bash -lc '
             set -eux
+            eval $(opam env)
             coqc --version
-            # No-Admitted check
-            if grep -R -n --include="*.v" 'Admitted\.' .; then
+            cd /coq
+            if grep -R -n --include="*.v" "Admitted\." .; then
               echo "ERROR: Found Admitted."; exit 1; fi
-            # Compile to /tmp to avoid permission issues on workspace
             coqc -Q . "" -noglob -o /tmp/FLT_new.vo FLT_new.v
             coqc -Q . "" -noglob -o /tmp/FLT_old.vo FLT_old.v
             ls -l /tmp/FLT_*.vo
+          '
