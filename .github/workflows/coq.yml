@@ -1,4 +1,4 @@
-name: Coq CI (Matrix)
+name: Coq CI (Matrix as root)
 on:
   push:
   pull_request:
@@ -10,8 +10,11 @@ jobs:
         coq_image: [coqorg/coq:8.19.2, coqorg/coq:8.20.1]
     container:
       image: ${{ matrix.coq_image }}
+      options: --user 0:0
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
       - name: Show Coq version
         run: coqc -v
       - name: Build FLT_new.v
