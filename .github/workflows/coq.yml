@@ -1,9 +1,7 @@
 name: Coq CI
-
 on:
   push:
   pull_request:
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -16,13 +14,12 @@ jobs:
       - uses: actions/checkout@v4
       - name: Show Coq version
         run: coqc -v
-      - name: Build Track B (GN2) — FLT-new.v
-        run: coqc -Q . "" FLT-new.v
-      - name: Build Track A (Coverage) — FLT-old.v
-        run: coqc -Q . "" FLT-old.v
+      - name: Build FLT-new.v
+        run: coqc FLT-new.v
+      - name: Build FLT-old.v
+        run: coqc FLT-old.v
       - name: Fail if any Admitted remain
         run: |
-          if grep -R -n --include="*.v" "Admitted\." . ; then
-            echo "::error file=*,title=Found Admitted::Please remove Admitted.";
-            exit 1;
-          fi
+          if grep -R -n --include="*.v" 'Admitted\.' .; then
+            echo "::error ::Found Admitted."; exit 1; fi
+
