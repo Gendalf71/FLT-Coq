@@ -1,134 +1,135 @@
-# FLT-Coq — Two Conditional Routes to FLT via GN(2)
 
-> Coq formalization(s) of a **conditional** route to Fermat’s Last Theorem (FLT) built around the explicit‑base hypothesis **GN(2)**.  
-> The shared single assumption in both variants is:
->
-> **GN(2).** For any $n>2$ and any $x,y,z \in \mathbb{N}$,
->
-> $$x^n + y^n = z^n \ \Rightarrow\ 2^n = 2\cdot n.$$
->
-> Together with the elementary fact $2^n > 2\cdot n$ for all $n \ge 3$, GN(2) gives an immediate contradiction; hence no natural solutions exist for $n>2$ (FLT). GN(2) is **assumed** (not proved) and is isolated as the single hypothesis.
+# FLT-Coq — Two Conditional Routes to FLT in Coq
+
+[![Coq CI](https://github.com/gendalf71/FLT-Coq/actions/workflows/coq.yml/badge.svg)](https://github.com/gendalf71/FLT-Coq/actions/workflows/coq.yml)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.xxxxxxx.svg)](https://doi.org/10.5281/zenodo.xxxxxxx)
+
+> **Scope disclaimer / Дисклеймер:**  
+> This repository formalizes **two closely-related conditional strategies** to derive FLT in Coq.  
+> **Track A — Coverage parameter (global normalizer \(o>1\))** with a *maximum-coverage* principle.  
+> **Track B — Explicit-base GN(2)**: for any putative \(n>2\) counterexample, postulate \(2^n = 2\cdot n\).  
+> In both tracks, the extra premise is **assumed (not proven)**; Coq verifies the downstream implication to **FLT**.  
+> Репозиторий содержит **две тактики**: A) параметр покрытия \(o>1\) с принципом максимального покрытия; B) явная гипотеза **GN(2)**. В обоих случаях допущение **принимается**, а Coq проверяет вывод к **ВТФ**.
 
 ---
 
-## Repository layout (EN / RU)
+## Tracks overview
 
-This repository contains **two closely related expositions** of the same conditional proof idea:
+### Track A — Coverage parameter (global normalizer \(o>1\))  — **file:** `FLT-old.v`
 
+- Postulates a single real \(o>1\) (global normalizer) such that any putative solution with \(n>2\) forces a **coverage identity** \(o^n = 2\cdot \mathrm{INR}(n)\); with **maximum coverage** the same \(o\) covers exactly \(n\in\{1,2\}\).  
+- Coq proves \(o=2\) and that \(o^n=2\cdot n\) implies \(n\in\{1,2\}\), yielding a contradiction for \(n>2\).  
+- Rationale & mapping are documented in the *old* PDFs (`*_old_*.pdf`).
+
+**Key Coq ingredients (names may vary slightly):**  
+`covers_with`, `normalization_gt1`, `maximum_coverage`, `normalization_equation`,  
+`pow2_gt_linear`, `pow3_gt_linear`, `pow_eq_linear_positive`,  
+`normalization_parameter_is_two`, `normalization_forces_small_exponent`,  
+`covers_two_one`, `covers_two_two`, `covers_two_only_small`,  
+`covers_two_nat`, `INR_two_mul_nat`,  
+`sum_diff_from_parameters_R`, `sum_diff_from_parameters_Z`, `parity_condition_Z`,  
+`fermat_last_theorem_from_global_normalization`, `fermat_last_theorem_via_maximum_coverage`.
+
+---
+
+### Track B — Explicit base **GN(2)**  — **file:** `FLT-new.v`
+
+- **GN(2):** for any putative natural solution with \(n>2\), **postulate** \(2^n = 2\cdot n\).  
+- Coq shows \(2^n = 2\cdot n \Rightarrow n\in\{1,2\}\) via elementary growth lemmas; contradiction for \(n>2\) ⇒ **FLT**.  
+- A real “wrapper” \(2^n = 2\cdot\mathrm{INR}(n)\) and bridge lemmas connect \(\mathbb{R}\) and \(\mathbb{N}\).  
+- Rationale & mapping are documented in the *new* PDFs (без `old`).
+
+**Key Coq ingredients:**  
+`GN2`, `FLT_from_GN2`, real wrapper `GN2_R`, bridges `covers_two_nat`, `INR_two_mul_nat`, `GN2_R_implies_GN2`, growth lemmas `pow2_gt_linear`, `pow3_gt_linear`, `pow_eq_linear_positive`, and parity lemmas `sum_diff_from_parameters_R`, `sum_diff_from_parameters_Z`, `parity_condition_Z`.  
+Also: `fermat_last_theorem_from_GN2_R` (via real wrapper).
+
+> **Motivation vs proof / Мотивация vs доказательство.**  
+> Параметризация \(z:=m^n+p^n,\ x:=m^n-p^n\) и паритетные факты включены как мотивация/проверки согласованности и **не используются** в финальном шаге обеих дорожек.
+
+---
+
+## Quick start
+
+**A) Docker (no local install):**
+```bash
+docker run --rm -v "$PWD":/coq -w /coq coqorg/coq:8.20.1 \
+  bash -lc 'coqc -Q . "" FLT-new.v && coqc -Q . "" FLT-old.v'
+```
+
+**B) Local (Coq ≥ 8.19):**
+```bash
+make           # builds *.vo (both tracks)
+make clean
+```
+
+**C) CI**  
+Push/PR triggers GitHub Actions (see `.github/workflows/coq.yml`) which:
+1) build on `coqorg/coq:8.19.2` and `8.20.1`;  
+2) compile **both** `FLT-new.v` (GN(2)) and `FLT-old.v` (coverage);  
+3) fail if any `Admitted.` remain.
+
+---
+
+## Project structure
 ```
 .
-├── FLT-new.v            # Coq source (NEW approach)
-├── FLT-old.v            # Coq source (OLD approach)
-├── *.pdf                # Compiled PDFs in English and Russian (mirrored sets)
-├── new/                 # NEW exposition (PDFs, figures; en/ru)
-├── old/                 # OLD exposition (PDFs, figures; en/ru)
-└── add-once/            # Side-by-side comparison + hypotheses on Fermat’s reasoning (en/ru)
+├─ FLT-new.v      # Track B: GN(2)
+├─ FLT-old.v      # Track A: Coverage parameter (o>1)
+├─ Makefile
+├─ .coqproject
+├─ .github/workflows/coq.yml
+├─ CITATION.cff
+├─ LICENSE
+└─ docs/
+   ├─ Dedenko_FLT_Description_old_en.pdf
+   ├─ FLT_Proof_Reconstruction_old_en.pdf
+   ├─ Dedenko_FLT_Coq_README_old.pdf
+   ├─ Dedenko_FLT_Description_en.pdf
+   ├─ FLT_Proof_Reconstruction_en.pdf
+   └─ Dedenko_FLT_Coq_README.pdf
 ```
-- The **root** contains Coq files that compile stand‑alone (`FLT-new.v`, `FLT-old.v`) and the compiled PDFs for quick reading (both EN/RU).
-- Subfolders **`old/`** and **`new/`** keep the respective article PDFs (readme/description/proof reconstruction) in **English** and **Russian** versions.
-- Folder **`add-once/`** provides a compact comparison of the two approaches and articulates **hypotheses** about Pierre Fermat’s possible line of thought, synthesized from both versions.
-- All documents have **bilingual** variants (EN/RU). Exact file names follow the pattern used in the repository (e.g., `*_old_en.pdf`, `*_old_ru.pdf`, `*_en.pdf`, `*_ru.pdf`).
-
-_Notes_: The current README integrates and replaces the earlier summary to reflect the **two‑variant** layout and the **comparison** materials.
-
-
-## What is formalized (shared core)
-
-- **GN(2) core over $\mathbb{N}$**  
-  A predicate `GN2` that encodes the hypothesis
-  ```coq
-  forall (n x y z : nat),
-    2 < n ->
-    Nat.pow x n + Nat.pow y n = Nat.pow z n ->
-    2 ^ n = 2 * n.
-  ```
-  From `GN2`, the lemma `FLT_from_GN2` derives a contradiction for any putative counterexample with $n>2$.
-
-- **Elementary growth lemmas**  
-  Exponential vs. linear growth (e.g., `2^n > 2·n` for $n\ge 3$), and the fact that $2^n = 2\cdot n$ is possible **only** for $n \in \{1,2\}$.
-
-- **(Optional) Real “wrapper” and bridge back to $\mathbb{N}$**  
-  Identities linking $\mathbb{R}$ and $\mathbb{N}$ are provided to phrase GN(2) as a coverage statement over reals and then bridge back to naturals. These are **expository** and can be omitted for the core implication.
-
-
-## OLD vs NEW (expository focus)
-
-Both variants reach the same conditional implication **GN(2) ⇒ FLT**. They differ by exposition and motivation:
-
-- **OLD**: Emphasizes **real parametrization** $m,p \in \mathbb{R}$ with the identities  
-  $z:=m^n+p^n,\ x:=m^n-p^n \Rightarrow z\pm x = 2\cdot m^n,\,2\cdot p^n$,  
-  specialization to $\mathbb{Z}$ (parity), and consistency checks. These parts **motivate** GN(2) but are **not needed** in the short contradiction once GN(2) is assumed.
-
-- **NEW**: Reframes the motivation around **“full‑coverage normalization at base 2”** and the idea that the **maximal coverage of admissible roots** emerges at the integer normalization $o=2$. Under this lens, GN(2) codifies the explicit‑base collapse at $2$, after which the elementary growth lemmas finish the contradiction.  
-  (The Coq core remains the same: GN(2) is a hypothesis; the contradiction for $n>2$ is mechanical.)
-
-- **add-once/**: Presents a **side‑by‑side comparison** and distills working **hypotheses on Fermat’s reasoning**, inferred from the two expositions.
-
-
-## Build & check
-
-You can compile each variant independently using only the standard library:
-
-```bash
-coqc FLT-new.v
-coqc FLT-old.v
-```
-Dependencies: Coq (with `Arith`, `Lia`, `Reals`, `ZArith`, `Ring`). No `Admitted` in the proof scripts.
-
-
-## Reading guide (bilingual)
-
-- **EN**: `Dedenko_FLT_Coq_README*.pdf`, `FLT_Proof_Reconstruction*.pdf`, `Dedenko_FLT_Description*.pdf` (both **old** and **new** variants live side-by-side).
-- **RU**: Russian counterparts for each of the above (same folders).
-
-See `add-once/` for the comparison deck and Fermat hypotheses (EN/RU).
-
-
-## Scope disclaimer
-
-This project **does not prove GN(2)**. It isolates GN(2) as the **single assumption** under which a short, elementary contradiction to $x^n + y^n = z^n$ for $n>2$ follows immediately.
-
-
-## Acknowledgements
-
-We thank colleagues and prior discussions that inspired both expositions and the comparison notes. A special note of gratitude to **S. P. Klykov** whose materials informed Appendix‑style developments and motivated parts of the “new” framing (normalization viewpoint).
 
 ---
 
-# FLT-Coq (Русский)
+## Article ↔ Coq mapping (Track B — GN(2))
 
-> Два близких по идее **условных** подхода к Великой теореме Ферма (ВТФ), оба построены вокруг гипотезы **ГН(2)**:
->
-> **ГН(2).** Для любого $n>2$ и любых $x,y,z \in \mathbb{N}$,
->
-> $$x^n + y^n = z^n \ \Rightarrow\ 2^n = 2\cdot n.\$$
->
-> Вместе с элементарным фактом $2^n > 2\cdot n$ при всех $n \ge 3$ это даёт немедленное противоречие; следовательно, решений в $\mathbb{N}$ при $n>2$ нет (ВТФ). ГН(2) **не доказывается**, а выделяется как единственное допущение.
-
-### Структура репозитория
-
-- В корне: компилируемые Coq‑файлы **`FLT-new.v`** и **`FLT-old.v`** и соответствующие PDF‑версии (EN/RU).  
-- В каталоге **`new/`** — «новая» экспозиция (EN/RU).  
-- В каталоге **`old/`** — «старая» экспозиция (EN/RU).  
-- В каталоге **`add-once/`** — **сравнение** двух подходов и **гипотезы** о ходе мыслей П. Ферма (EN/RU).
-
-### Сборка
-
-```bash
-coqc FLT-new.v
-coqc FLT-old.v
-```
-
-### Пояснения
-
-- **OLD**: акцент на параметризацию $m,p \in \mathbb{R}$, переход к $\mathbb{Z}$ и проверки чётности/согласованности. Это мотивация; финальная импликация из ГН(2) не требует этих разделов.
-- **NEW**: акцент на «**нормировке базы 2**» и идее, что **наибольшее покрытие корней** возникает при целочисленной нормировке $o=2$; далее элементарные оценки роста завершают противоречие.
-- **add-once/**: компактная «партитура» сравнения и выводы о возможной логике Ферма.
-
-### Дисклеймер
-
-Проект **не доказывает ГН(2)**, а демонстрирует, как при её принятии ВТФ для $n>2$ следует немедленно.
+| Article item (new PDFs) | Coq lemma / theorem |
+|---|---|
+| Algebraic parametrization over **R**; integer parity facts over **Z** | `sum_diff_from_parameters_R`, `sum_diff_from_parameters_Z`, `parity_condition_Z` |
+| GN(2) hypothesis over **N** | `GN2` |
+| Growth vs. linear; from \(2^n = 2\cdot n\) infer \(n\in\{1,2\}\) | `pow2_gt_linear`, `pow3_gt_linear`, `pow_eq_linear_positive` |
+| Real wrapper and bridge back to **N** | `GN2_R`, `covers_two_nat`, `INR_two_mul_nat`, `GN2_R_implies_GN2` |
+| FLT from GN(2) (direct) / via real wrapper | `FLT_from_GN2` / `fermat_last_theorem_from_GN2_R` |
 
 ---
 
-© 2025. FLT-Coq: Conditional GN(2) ⇒ FLT (two-variant exposition; EN/RU).
+## Article ↔ Coq mapping (Track A — Coverage parameter)
+
+| Article item (old PDFs) | Coq lemma / theorem |
+|---|---|
+| Algebraic parametrization over **R**; integer parity facts over **Z** | `sum_diff_from_parameters_R`, `sum_diff_from_parameters_Z`, `parity_condition_Z` |
+| Coverage predicate and bridge to naturals | `covers_with`, `covers_two_nat`, `INR_two_mul_nat` |
+| Growth vs. linear; from \(o^n = 2\cdot n\) infer \(n\in\{1,2\}\) | `pow2_gt_linear`, `pow3_gt_linear`, `pow_eq_linear_positive` |
+| Global normalization & maximum coverage (hypotheses/section) | `normalization_gt1`, `maximum_coverage`, `normalization_equation` |
+| Consequences: \(o=2\) and contradiction for \(n>2\) | `normalization_parameter_is_two`, `normalization_forces_small_exponent` |
+| Explicit realisation with \(o=2\); final FLT corollaries | `covers_two_one`, `covers_two_two`, `covers_two_only_small`, `fermat_last_theorem_from_global_normalization`, `fermat_last_theorem_via_maximum_coverage` |
+
+---
+
+## Mathematical notes (brief)
+
+- Core comparisons are elementary growth inequalities showing that an equality of the form “exponential = linear (in \(n\))” forces \(n\in\{1,2\}\).  
+- Track A assumes a **coverage identity** \(o^n = 2\cdot \mathrm{INR}(n)\) induced by any counterexample with a *fixed* \(o>1\) and imposes **maximum coverage**; Track B assumes **GN(2)** directly.
+
+**Limitations / Ограничения.**  
+Ни в одной дорожке допущение не доказывается внутри репозитория; Coq проверяет **следствие** к FLT при указанных предпосылках. Паритет/параметризация — мотивация, не задействованы в финальном шаге.
+
+---
+
+## Cite / Как ссылаться
+
+See `CITATION.cff` (GitHub/Zenodo). После первого релиза Zenodo замените DOI в бейдже.
+
+## License
+
+BSD-3-Clause — см. `LICENSE`.

@@ -1,0 +1,23 @@
+cff-version: 1.2.0
+message: "If you use this repository, please cite it as below."
+title: "FLT-Coq: Two Conditional Routes (Coverage Parameter and GN(2))"
+authors:
+  - family-names: "Dedenko"
+    given-names: "Grigoriy"
+version: "0.2.0"
+date-released: "2025-10-10"
+repository-code: "https://github.com/gendalf71/FLT-Coq"
+doi: "10.5281/zenodo.xxxxxxx"   # replace after your first Zenodo release
+abstract: >
+  Two closely-related Coq formalizations showing conditional routes to Fermat’s Last Theorem:
+  (A) a coverage-parameter approach with a global normalizer o>1 and maximum-coverage
+  principle; (B) an explicit-base hypothesis GN(2). In both tracks, the added premise is
+  assumed (not proven). The repository focuses on reproducibility (CI, Docker one-liner) and
+  an automated check ensuring there are no 'Admitted.'.
+keywords:
+  - Coq
+  - Fermat's Last Theorem
+  - GN(2)
+  - coverage parameter
+  - formal verification
+
