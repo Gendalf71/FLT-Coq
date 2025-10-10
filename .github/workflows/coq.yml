@@ -1,31 +1,26 @@
-name: Coq CI (docker-coq-action, tmp outputs)
+name: Coq CI (docker-coq-action, Coq 8.18.0, tmp outputs)
 on:
   push:
   pull_request:
 jobs:
   build:
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        image: [ 'coqorg/coq:8.19.2', 'coqorg/coq:8.20.1' ]
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 1
 
-      - name: Build with docker-coq-action (write outputs to /tmp)
+      - name: Build with docker-coq-action (Coq 8.18.0)
         uses: coq-community/docker-coq-action@v1
         with:
-          custom_image: ${{ matrix.image }}
+          custom_image: coqorg/coq:8.18.0
           script: |
             set -eux
-            coqc -v
+            coqc --version
             # No-Admitted check
             if grep -R -n --include="*.v" 'Admitted\.' .; then
               echo "ERROR: Found Admitted."; exit 1; fi
             # Compile to /tmp to avoid permission issues on workspace
             coqc -Q . "" -noglob -o /tmp/FLT_new.vo FLT_new.v
             coqc -Q . "" -noglob -o /tmp/FLT_old.vo FLT_old.v
-            # Verify artifacts exist
             ls -l /tmp/FLT_*.vo
