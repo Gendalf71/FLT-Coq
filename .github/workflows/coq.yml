@@ -1,4 +1,4 @@
-name: Coq CI (Matrix as root)
+name: Coq CI (Matrix root, explicit coqc path)
 on:
   push:
   pull_request:
@@ -6,6 +6,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         coq_image: [coqorg/coq:8.19.2, coqorg/coq:8.20.1]
     container:
@@ -15,12 +16,26 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 1
+
       - name: Show Coq version
-        run: coqc -v
+        shell: bash
+        run: |
+          set -euxo pipefail
+          echo "PATH=$PATH"
+          if command -v /usr/local/bin/coqc >/dev/null 2>&1; then /usr/local/bin/coqc -v; else coqc -v; fi
+
       - name: Build FLT_new.v
-        run: coqc -Q . "" FLT_new.v
+        shell: bash
+        run: |
+          set -euxo pipefail
+          if command -v /usr/local/bin/coqc >/dev/null 2>&1; then /usr/local/bin/coqc -Q . "" FLT_new.v; else coqc -Q . "" FLT_new.v; fi
+
       - name: Build FLT_old.v
-        run: coqc -Q . "" FLT_old.v
+        shell: bash
+        run: |
+          set -euxo pipefail
+          if command -v /usr/local/bin/coqc >/dev/null 2>&1; then /usr/local/bin/coqc -Q . "" FLT_old.v; else coqc -Q . "" FLT_old.v; fi
+
       - name: Fail if any Admitted remain
         run: |
           if grep -R -n --include="*.v" 'Admitted\.' .; then
