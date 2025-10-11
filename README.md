@@ -2,7 +2,7 @@
 # FLT-Coq — Two Conditional Routes to FLT in Coq
 
 [![Coq CI](https://github.com/gendalf71/FLT-Coq/actions/workflows/coq.yml/badge.svg)](https://github.com/gendalf71/FLT-Coq/actions/workflows/coq.yml)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.xxxxxxx.svg)](https://doi.org/10.5281/zenodo.xxxxxxx)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.17329464.svg)](https://doi.org/10.5281/zenodo.17329464)
 
 > **Scope disclaimer / Дисклеймер:**  
 > This repository formalizes **two closely-related conditional strategies** to derive FLT in Coq.  
