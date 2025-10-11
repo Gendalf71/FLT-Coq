@@ -4,6 +4,7 @@ title: "FLT-Coq: Two Conditional Routes (Coverage Parameter and GN(2))"
 authors:
   - family-names: "Dedenko"
     given-names: "Grigoriy"
+    orcid: "https://orcid.org/0000-0002-0418-6389"
 version: "0.2.0"
 date-released: "2025-10-11"
 repository-code: "https://github.com/gendalf71/FLT-Coq"
