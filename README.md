@@ -90,7 +90,6 @@ GitHub Actions builds inside Docker on `coqorg/coq:8.18.0`; artifacts (`.vo/.glo
 ├─ .gitignore
 ├─ LICENSE
 ├─ CITATION.cff
-├─ coq.yml
 ├─ RELEASE_NOTES_v0.2.0.md
 ├─ CONTRIBUTING.md
 └─ README.md
