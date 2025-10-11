@@ -3,7 +3,7 @@
   "upload_type": "software",
   "publication_date": "2025-10-11",
   "version": "v0.2.0",
-  "description": "Coq formalization of two conditional routes to Fermat’s Last Theorem (FLT):\nTrack A — Coverage parameter (global normalizer o>1 with maximum coverage);\nTrack B — Explicit base GN(2).\n\nScope note: each track assumes its own extra premise (not proven here) and verifies\nin Coq that FLT follows as a consequence under that assumption. The repository is\nreproducible (Docker/CI) and enforces a no-Admitted policy.\n\nFiles: FLT_new.v (GN(2)), FLT_old.v (Coverage parameter). PDFs are under new/ and old/.\n\nCorresponding author: GLDedenko@fa.ru\n",
+  "description": "Coq formalization of two conditional routes to Fermat’s Last Theorem (FLT):\nTrack A — Coverage parameter (global normalizer o>1 with maximum coverage);\nTrack B — Explicit base GN(2).\n\nScope note: each track assumes its own extra premise (not proven here) and verifies\nin Coq that FLT follows as a consequence under that assumption. The repository is\nreproducible (Docker/CI) and enforces a no-Admitted policy.\n\nFiles: FLT_new.v (GN(2)), FLT_old.v (Coverage parameter). PDFs are under new/ and old/.\n\nCorresponding author: GLDedenko@fa.ru\n\nAuthor’s bio: G. L. Dedenko — Candidate of Physical and Mathematical Sciences (PhD equivalent),\nSenior Lecturer, Department of Information Technologies (KIT), Financial University under the\nGovernment of the Russian Federation, Moscow, Russia.\n",
   "creators": [
     {
       "name": "Dedenko, G. L.",
@@ -32,6 +32,55 @@
     "GN(2)",
     "coverage parameter"
   ],
+  "subjects": [
+    {
+      "term": "Mathematics"
+    },
+    {
+      "term": "Number theory"
+    },
+    {
+      "term": "Computer science"
+    },
+    {
+      "term": "Formal methods"
+    },
+    {
+      "term": "Formal verification"
+    },
+    {
+      "term": "Theorem proving"
+    },
+    {
+      "term": "Proof assistants"
+    },
+    {
+      "term": "Coq"
+    },
+    {
+      "term": "Artificial intelligence"
+    }
+  ],
+  "communities": [
+    {
+      "identifier": "mathematics"
+    },
+    {
+      "identifier": "number-theory-and-related-items"
+    },
+    {
+      "identifier": "mathematics-and-computer-science"
+    },
+    {
+      "identifier": "applicable-formal-methods"
+    },
+    {
+      "identifier": "formal-verification"
+    },
+    {
+      "identifier": "artificial-intelligence-and-theorem-proving"
+    }
+  ],
   "related_identifiers": [
     {
       "relation": "isSupplementTo",
@@ -44,6 +93,14 @@
     {
       "relation": "isRelatedTo",
       "identifier": "https://github.com/Gendalf71/FLT-Coq/releases/tag/v0.2.0"
+    },
+    {
+      "relation": "isVersionOf",
+      "identifier": "https://doi.org/10.5281/zenodo.17329464"
+    },
+    {
+      "relation": "requires",
+      "identifier": "https://hub.docker.com/r/coqorg/coq/tags?name=8.18.0"
     }
   ]
 }
