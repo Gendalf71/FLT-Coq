@@ -5,7 +5,7 @@ authors:
   - family-names: "Dedenko"
     given-names: "Grigoriy"
 version: "0.2.0"
-date-released: "2025-10-10"
+date-released: "2025-10-11"
 repository-code: "https://github.com/gendalf71/FLT-Coq"
 doi: "10.5281/zenodo.xxxxxxx"   # replace after your first Zenodo release
 abstract: >
