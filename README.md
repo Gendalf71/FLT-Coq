@@ -71,6 +71,8 @@ GitHub Actions builds inside Docker on `coqorg/coq:8.18.0`; artifacts (`.vo/.glo
 ```
 .
 ├─ add-once/
+├─ tools/
+│  └─ check-admitted.sh
 ├─ new/
 │  ├─ Dedenko_FLT_Description_en.pdf
 │  ├─ FLT_Proof_Reconstruction_en.pdf
@@ -79,8 +81,8 @@ GitHub Actions builds inside Docker on `coqorg/coq:8.18.0`; artifacts (`.vo/.glo
 │  ├─ Dedenko_FLT_Description_old_en.pdf
 │  ├─ FLT_Proof_Reconstruction_old_en.pdf
 │  └─ Dedenko_FLT_Coq_README_old.pdf
-├─ FLT-new.v
-├─ FLT-old.v
+├─ FLT_new.v
+├─ FLT_old.v
 ├─ FLT.v
 ├─ FLT_Coq_compile_result.png
 ├─ Makefile
