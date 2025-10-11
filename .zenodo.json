@@ -1,0 +1,49 @@
+{
+  "title": "FLT-Coq: Two Conditional Routes to Fermat’s Last Theorem (Coverage Parameter and GN(2))",
+  "upload_type": "software",
+  "publication_date": "2025-10-11",
+  "version": "v0.2.0",
+  "description": "Coq formalization of two conditional routes to Fermat’s Last Theorem (FLT):\nTrack A — Coverage parameter (global normalizer o>1 with maximum coverage);\nTrack B — Explicit base GN(2).\n\nScope note: each track assumes its own extra premise (not proven here) and verifies\nin Coq that FLT follows as a consequence under that assumption. The repository is\nreproducible (Docker/CI) and enforces a no-Admitted policy.\n\nFiles: FLT_new.v (GN(2)), FLT_old.v (Coverage parameter). PDFs are under new/ and old/.\n\nCorresponding author: GLDedenko@fa.ru\n",
+  "creators": [
+    {
+      "name": "Dedenko, G. L.",
+      "affiliation": "Financial University under the Government of the Russian Federation, Department of Information Technologies (KIT), Moscow, Russia",
+      "orcid": "0000-0002-0418-6389"
+    }
+  ],
+  "contributors": [
+    {
+      "name": "Dedenko, G. L.",
+      "affiliation": "Financial University under the Government of the Russian Federation, Department of Information Technologies (KIT), Moscow, Russia",
+      "orcid": "0000-0002-0418-6389",
+      "type": "ContactPerson",
+      "email": "GLDedenko@fa.ru"
+    }
+  ],
+  "license": "BSD-3-Clause",
+  "access_right": "open",
+  "language": "eng",
+  "keywords": [
+    "Coq",
+    "formal verification",
+    "number theory",
+    "Fermat's Last Theorem",
+    "theorem proving",
+    "GN(2)",
+    "coverage parameter"
+  ],
+  "related_identifiers": [
+    {
+      "relation": "isSupplementTo",
+      "identifier": "https://github.com/Gendalf71/FLT-Coq"
+    },
+    {
+      "relation": "isDocumentedBy",
+      "identifier": "https://github.com/Gendalf71/FLT-Coq/blob/main/README.md"
+    },
+    {
+      "relation": "isRelatedTo",
+      "identifier": "https://github.com/Gendalf71/FLT-Coq/releases/tag/v0.2.0"
+    }
+  ]
+}
