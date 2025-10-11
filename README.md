@@ -83,7 +83,6 @@ GitHub Actions builds inside Docker on `coqorg/coq:8.18.0`; artifacts (`.vo/.glo
 │  └─ Dedenko_FLT_Coq_README_old.pdf
 ├─ FLT_new.v
 ├─ FLT_old.v
-├─ FLT.v
 ├─ FLT_Coq_compile_result.png
 ├─ Makefile
 ├─ Dockerfile
