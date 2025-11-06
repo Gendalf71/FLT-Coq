@@ -23,5 +23,7 @@ jobs:
               echo "ERROR: Found Admitted."; exit 1; fi
             coqc -Q . "" -noglob -o /tmp/FLT_new.vo FLT_new.v
             coqc -Q . "" -noglob -o /tmp/FLT_old.vo FLT_old.v
+            coqc -Q . "" -noglob -o /tmp/GlobalNormalization.vo GlobalNormalization.v
             ls -l /tmp/FLT_*.vo
+            ls -l /tmp/Global*.vo
           '
