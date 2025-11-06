@@ -1,141 +1,105 @@
- 
-# FLT-Coq — Two Conditional Routes to FLT in Coq
+# FLT‑Coq — Global Normalization (single‑module)
 
 [![Coq CI](https://github.com/gendalf71/FLT-Coq/actions/workflows/coq.yml/badge.svg)](https://github.com/gendalf71/FLT-Coq/actions/workflows/coq.yml)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.17329464.svg)](https://doi.org/10.5281/zenodo.17329464)
 
-> **Scope disclaimer / Дисклеймер:**  
-> This repository formalizes **two closely-related conditional strategies** to derive FLT in Coq.  
-> **Track A — Coverage parameter (global normalizer $o>1$)** with a *maximum-coverage* principle.  
-> **Track B — Explicit-base GN(2)**: for any putative $n>2$ counterexample, postulate $2^n = 2\cdot n$.  
-> In both tracks, the extra premise is **assumed (not proven)**; Coq verifies the downstream implication to **FLT**.  
-> Репозиторий содержит **две тактики**: A) параметр покрытия $o>1$ с принципом максимального покрытия; B) явная гипотеза **GN(2)**. В обоих случаях допущение **принимается**, а Coq проверяет вывод к **ВТФ**.
+> **Scope / Дисклеймер**
+>
+> This repository contains a **single Coq module** `GlobalNormalization` that formalizes the *coverage‑parameter* route to FLT.  
+> The approach **assumes** that any putative counterexample with $n>2$ induces a *coverage identity* for a fixed real $o>1$:
+> $$o^n \;=\; 2\cdot \mathrm{INR}(n).$$
+> Under the **maximum‑coverage** principle this forces $o=2$ and further implies $n\in\{1,2\}$, contradicting $n>2$ and hence yielding **FLT**.  
+> В репозитории представлена **одна** дорожка с параметром покрытия $o>1$; допущение принимается как гипотеза, а Coq проверяет вывод к **ВТФ**.
 
 ---
 
-## Tracks overview
+## File
 
-### Track A — Coverage parameter (global normalizer $o>1$)  — **file:** `FLT_old.v`
+- **`GlobalNormalization.v`** — all definitions, auxiliary lemmas (marked `#[local]`), main “bridge”, maximum‑coverage theorem, FLT corollaries, and end‑of‑file sanity goals.
 
-- Postulates a single real $o>1$ (global normalizer) such that any putative solution with $n>2$ forces a **coverage identity** $o^n = 2\cdot \mathrm{INR}(n)$; with **maximum coverage** the same $o$ covers exactly $n\in\{1,2\}$.  
-- Coq proves $o=2$ and that $o^n=2\cdot n$ implies $n\in\{1,2\}$, yielding a contradiction for $n>2$.  
-- Rationale & mapping are documented in the *old* PDFs (`*_old_*.pdf`).
-
-**Key Coq ingredients (names may vary slightly):**  
-`covers_with`, `normalization_gt1`, `maximum_coverage`, `normalization_equation`,  
-`pow2_gt_linear`, `pow3_gt_linear`, `pow_eq_linear_positive`,  
-`normalization_parameter_is_two`, `normalization_forces_small_exponent`,  
-`covers_two_one`, `covers_two_two`, `covers_two_only_small`,  
-`covers_two_nat`, `INR_two_mul_nat`,  
-`sum_diff_from_parameters_R`, `sum_diff_from_parameters_Z`, `parity_condition_Z`,  
-`fermat_last_theorem_from_global_normalization`, `fermat_last_theorem_via_maximum_coverage`.
+If you only want the public interface, the module ends with:
+```coq
+Export GlobalNormalization.v.
+```
+so you can simply `Require Import GlobalNormalization.` and use the exported names.
 
 ---
 
-### Track B — Explicit base **GN(2)**  — **file:** `FLT_new.v`
+## How to build
 
-- **GN(2):** for any putative natural solution with $n>2$, **postulate** $2^n = 2\cdot n$.  
-- Coq shows $2^n = 2\cdot n \Rightarrow n\in\{1,2\}$ via elementary growth lemmas; contradiction for $n>2$ ⇒ **FLT**.  
-- A real “wrapper” $2^n = 2\cdot\mathrm{INR}(n)$ and bridge lemmas connect $\mathbb{R}$ and $\mathbb{N}$.  
-- Rationale & mapping are documented in the *new* PDFs (без `old`).
-
-**Key Coq ingredients:**  
-`GN2`, `FLT_from_GN2`, real wrapper `GN2_R`, bridges `covers_two_nat`, `INR_two_mul_nat`, `GN2_R_implies_GN2`, growth lemmas `pow2_gt_linear`, `pow3_gt_linear`, `pow_eq_linear_positive`, and parity lemmas `sum_diff_from_parameters_R`, `sum_diff_from_parameters_Z`, `parity_condition_Z`.  
-Also: `fermat_last_theorem_from_GN2_R` (via real wrapper).
-
-> **Motivation vs proof / Мотивация vs доказательство.**  
-> Параметризация $z:=m^n+p^n,\ x:=m^n-p^n$ и паритетные факты включены как мотивация/проверки согласованности и **не используются** в финальном шаге обеих дорожек.
-
----
-
-## Quick start
-
-**A) Docker (no local install, matches CI — Coq $8.18.0$):**
+**A) Docker (matches CI, Coq 8.18.0)**
 ```bash
 docker run --rm -v "$PWD":/coq -w /coq coqorg/coq:8.18.0 \
-  bash -lc 'coqc -Q . "" FLT_new.v && coqc -Q . "" FLT_old.v'
+  bash -lc 'coqc -Q . "" GlobalNormalization.v'
 ```
 
-**B) Local (Coq $\ge 8.18$):**
+**B) Local (Coq ≥ 8.18)**
 ```bash
-coqc -Q . "" FLT_new.v
-coqc -Q . "" FLT_old.v
-```
-
-**C) CI**  
-GitHub Actions builds inside Docker on `coqorg/coq:8.18.0`; artifacts (`.vo/.glob`) are written to `/tmp`, so the repository stays clean. The workflow fails if any `Admitted.` remain.
-
----
-
-## Project structure
-```
-.
-├─ add-once/
-├─ tools/
-│  └─ check-admitted.sh
-├─ new/
-│  ├─ Dedenko_FLT_Description_en.pdf
-│  ├─ FLT_Proof_Reconstruction_en.pdf
-│  └─ Dedenko_FLT_Coq_README.pdf
-├─ old/
-│  ├─ Dedenko_FLT_Description_old_en.pdf
-│  ├─ FLT_Proof_Reconstruction_old_en.pdf
-│  └─ Dedenko_FLT_Coq_README_old.pdf
-├─ FLT_new.v
-├─ FLT_old.v
-├─ FLT_Coq_compile_result.png
-├─ Makefile
-├─ Dockerfile
-├─ .coqproject
-├─ .gitignore
-├─ LICENSE
-├─ CITATION.cff
-├─ RELEASE_NOTES_v0.2.0.md
-├─ CONTRIBUTING.md
-└─ README.md
+coqc -Q . "" GlobalNormalization.v
 ```
 
 ---
 
-## Article ↔ Coq mapping (Track B — GN(2))
+## What the module proves (informally)
 
-| Article item (new PDFs) | Coq lemma / theorem |
-|---|---|
-| Algebraic parametrization over $\mathbb{R}$; integer parity facts over $\mathbb{Z}$ | `sum_diff_from_parameters_R`, `sum_diff_from_parameters_Z`, `parity_condition_Z` |
-| GN(2) hypothesis over $\mathbb{N}$ | `GN2` |
-| Growth vs. linear; from $2^n = 2\cdot n$ infer $n\in\{1,2\}$ | `pow2_gt_linear`, `pow3_gt_linear`, `pow_eq_linear_positive` |
-| Real wrapper and bridge back to $\mathbb{N}$ | `GN2_R`, `covers_two_nat`, `INR_two_mul_nat`, `GN2_R_implies_GN2` |
-| FLT from GN(2) (direct) / via real wrapper | `FLT_from_GN2` / `fermat_last_theorem_from_GN2_R` |
+- **Coverage predicate.** `covers_with o n : Prop` is the equality
+  $$o^n \;=\; 2\cdot \mathrm{INR}(n).$$
 
----
+- **Bridge from two normalizations to a natural power identity.**  
+  `two_real_normalizations_imply_nat_power_eq` shows that $o^n=2\cdot\mathrm{INR}(n)$ and $o^m=2\cdot\mathrm{INR}(m)$ imply
+  $$ (2n)^m = (2m)^n \quad\text{over } \mathbb{N}.$$
 
-## Article ↔ Coq mapping (Track A — Coverage parameter)
+- **Maximum coverage forces small exponents and $o=2$.**  
+  `maximum_coverage_as_theorem` yields $o=2$ and `covers_with 2 n → n∈{1,2}`.
 
-| Article item (old PDFs) | Coq lemma / theorem |
-|---|---|
-| Algebraic parametrization over $\mathbb{R}$; integer parity facts over $\mathbb{Z}$ | `sum_diff_from_parameters_R`, `sum_diff_from_parameters_Z`, `parity_condition_Z` |
-| Coverage predicate and bridge to naturals | `covers_with`, `covers_two_nat`, `INR_two_mul_nat` |
-| Growth vs. linear; from $o^n = 2\cdot n$ infer $n\in\{1,2\}$ | `pow2_gt_linear`, `pow3_gt_linear`, `pow_eq_linear_positive` |
-| Global normalization & maximum coverage (hypotheses/section) | `normalization_gt1`, `maximum_coverage`, `normalization_equation` |
-| Consequences: $o=2$ and contradiction for $n>2$ | `normalization_parameter_is_two`, `normalization_forces_small_exponent` |
-| Explicit realisation with $o=2$; final FLT corollaries | `covers_two_one`, `covers_two_two`, `covers_two_only_small`, `fermat_last_theorem_from_global_normalization`, `fermat_last_theorem_via_maximum_coverage` |
+- **FLT corollaries (conditional).**  
+  From the hypothesis that any putative $(x,y,z,n)$ with $n>2$ satisfies `covers_with o n`, Coq derives a contradiction for $n>2$ via
+  `normalization_parameter_is_two`, `normalization_forces_small_exponent` and the corollaries
+  `fermat_last_theorem_from_global_normalization` and
+  `fermat_last_theorem_via_maximum_coverage` (real wrapper $2^n=2\cdot\mathrm{INR}(n)$).
 
----
-
-## Mathematical notes (brief)
-
-- Core comparisons are elementary growth inequalities showing that an equality of the form “exponential = linear (in $n$)” forces $n\in\{1,2\}$.  
-- Track A assumes a **coverage identity** $o^n = 2\cdot \mathrm{INR}(n)$ induced by any counterexample with a *fixed* $o>1$ and imposes **maximum coverage**; Track B assumes **GN(2)** directly.
-
-**Limitations / Ограничения.**  
-Ни в одной дорожке допущение не доказывается внутри репозитория; Coq проверяет **следствие** к FLT при указанных предпосылках. Паритет/параметризация — мотивация, не задействованы в финальном шаге.
+**Auxiliaries used internally (marked `#[local]`).**  
+Arithmetic over $\mathbb{Z}$: binomial divisibility and parity for $z:=m^n+p^n$, $x:=m^n-p^n$.  
+Arithmetic over $\mathbb{N}$ and $\mathbb{R}$: elementary growth lemmas showing that an identity of the form “exponential $=$ linear” forces $n\in\{1,2\}$.
 
 ---
 
-## Cite / Как ссылаться
+## Key definitions and lemmas (selection)
 
-See `CITATION.cff` (GitHub/Zenodo).
+- `covers_with (o: R) (n: nat) : Prop` — $o^n=2\cdot\mathrm{INR}(n)$.
+- **Public results:**  
+  `covers_with_one_forces_two`, `two_real_normalizations_imply_nat_power_eq`,  
+  `covers_with_two_characterisation`, `maximum_coverage_as_theorem`,  
+  `normalization_parameter_is_two`, `normalization_forces_small_exponent`,  
+  `fermat_last_theorem_from_global_normalization`, `fermat_last_theorem_via_maximum_coverage`.
+- **Internals (`#[local]`):** parity/divisibility over $\mathbb{Z}$, growth lemmas (`pow2_gt_linear`, `pow_eq_linear_positive`), real–nat bridges (`covers_two_nat`, `INR_two_mul_nat`, etc.).
 
-## License
+---
 
-BSD-3-Clause — см. `LICENSE`.
+## Using the module
+
+```coq
+From Coq Require Import Reals Arith.
+Require Import GlobalNormalization.
+
+(* Example: you can refer to the public lemmas directly *)
+Check covers_with_one_forces_two.
+Check maximum_coverage_as_theorem.
+```
+
+The end of `GlobalNormalization.v` contains **sanity goals** (quick regression checks) like:
+$$\texttt{covers\_with\ 2\ 3 -> False} \quad\text{and}\quad
+\forall n>2,\ \texttt{covers\_with\ 2\ n -> False}.$$
+
+---
+
+## Limitations / Ограничения
+
+This is a **conditional** development: the coverage identity is **assumed**, not proven. The module shows that this assumption is sufficient to derive FLT. Паритетные и параметрические леммы служат проверками согласованности и не задействованы в финальном шаге.
+
+---
+
+## License / Citation
+
+- License: **BSD‑3‑Clause** (`LICENSE`).
+- Cite via `CITATION.cff` / Zenodo badge above.
