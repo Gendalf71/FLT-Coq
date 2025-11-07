@@ -20,16 +20,5 @@
     "Number theory",
     "Global normalization",
     "proof engineering"
-  ],
-  "related_identifiers": [
-    {
-      "relation": "isRelatedTo",
-      "identifier": "https://github.com/Gendalf71/FLT-Coq/releases/tag/0.3.0",
-      "resource_type": "software"
-    },
-    {
-      "relation": "isVersionOf",
-      "identifier": "https://doi.org/10.5281/zenodo.17329465"
-    }
   ]
 }
