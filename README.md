@@ -56,7 +56,7 @@ coqc -Q . "" GlobalNormalization.v
   From the hypothesis that any putative $(x,y,z,n)$ with $n>2$ satisfies `covers_with o n`, Coq derives a contradiction for $n>2$ via
   `normalization_parameter_is_two`, `normalization_forces_small_exponent` and the corollaries
   `fermat_last_theorem_from_global_normalization` and
-  `fermat_last_theorem_via_maximum_coverage` (real wrapper $2^n=2\cdot\mathrm{INR}(n)$).
+  `fermat_last_theorem_via_maximum_coverage` (real wrapper $2^n=2\cdot\mathrm{INR}(n)$ ).
 
 **Auxiliaries used internally (marked `#[local]`).**  
 Arithmetic over $\mathbb{Z}$: binomial divisibility and parity for $z:=m^n+p^n$, $x:=m^n-p^n$.  
