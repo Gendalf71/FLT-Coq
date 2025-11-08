@@ -88,7 +88,7 @@ Check maximum_coverage_as_theorem.
 ```
 
 The end of `GlobalNormalization.v` contains **sanity goals** (quick regression checks) like:
-$$\texttt{covers\_with\ 2\ 3 -> False} \quad\text{and}\quad\forall n>2,\ \texttt{covers\_with\ 2\ n -> False}.$$
+$\texttt{covers\_with\ 2\ 3 -> False} \quad\text{and}\quad\forall n>2,\ \texttt{covers\_with\ 2\ n -> False}.$
 
 ---
 
