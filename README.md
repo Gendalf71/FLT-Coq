@@ -47,7 +47,7 @@ coqc -Q . "" GlobalNormalization.v
 
 - **Bridge from two normalizations to a natural power identity.**  
   `two_real_normalizations_imply_nat_power_eq` shows that $o^n=2\cdot\mathrm{INR}(n)$ and $o^m=2\cdot\mathrm{INR}(m)$ imply
-  $$ (2n)^m = (2m)^n \quad\text{over } \mathbb{N}.$$
+  $$(2n)^m = (2m)^n \quad\text{over } \mathbb{N}.$$
 
 - **Maximum coverage forces small exponents and $o=2$.**  
   `maximum_coverage_as_theorem` yields $o=2$ and `covers_with 2 n → n∈{1,2}`.
@@ -88,8 +88,7 @@ Check maximum_coverage_as_theorem.
 ```
 
 The end of `GlobalNormalization.v` contains **sanity goals** (quick regression checks) like:
-$$\texttt{covers\_with\ 2\ 3 -> False} \quad\text{and}\quad
-\forall n>2,\ \texttt{covers\_with\ 2\ n -> False}.$$
+$$\texttt{covers\_with\ 2\ 3 -> False} \quad\text{and}\quad\forall n>2,\ \texttt{covers\_with\ 2\ n -> False}.$$
 
 ---
 
