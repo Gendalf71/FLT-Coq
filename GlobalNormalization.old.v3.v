@@ -471,3 +471,4 @@ Goal forall n : nat, (n = 2 ^ (n - 1))%nat -> n = 1%nat \/ n = 2%nat.
 Proof.
   exact binary_scaling_roots_only_one_two.
 Qed.
+
