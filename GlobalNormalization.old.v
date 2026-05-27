@@ -1,5 +1,7 @@
+From Coq Require Import Init.Prelude.
 From Coq Require Import Arith Lia Reals ZArith Ring Lra.
 From Coq Require Import Arith.PeanoNat.
+Module GlobalNormalization.
 (* ============================================================= *)
 (*  Global-normalization reading of Dedenko's manuscript.         *)
 (*  Parameters m,p range over the reals; parity arguments are     *)
@@ -12,10 +14,10 @@ From Coq Require Import Arith.PeanoNat.
 (* ---------- Auxiliary binomial divisibility facts ---------- *)
 Local Open Scope Z_scope.
 
-Lemma Z_sub_split (a b c : Z) : a - b = (a - c) + (c - b).
+#[local] Lemma Z_sub_split (a b c : Z) : a - b = (a - c) + (c - b).
 Proof. ring. Qed.
 
-Lemma Zpow_diff_divides (x y : Z) (n : nat) :
+#[local] Lemma Zpow_diff_divides (x y : Z) (n : nat) :
   Z.divide (x - y) (Z.pow x (Z.of_nat n) - Z.pow y (Z.of_nat n)).
 Proof.
   induction n as [|n IH].
@@ -37,7 +39,7 @@ Proof.
     ring.
 Qed.
 
-Lemma odd_n_diff_pow_even
+#[local] Lemma odd_n_diff_pow_even
       (a b : Z) (n : nat) :
   Nat.odd n = true ->
   Z.divide 2 (Z.pow (a + b) (Z.of_nat n) - Z.pow (a - b) (Z.of_nat n)).
@@ -55,29 +57,12 @@ Proof.
   ring.
 Qed.
 
-
 Close Scope Z_scope.
-
-
-(* ---------- Real-parameter identities (m,p ∈ R) ---------- *)
-Local Open Scope R_scope.
-
-Lemma sum_diff_from_parameters_R
-      (n : nat) (m p : R) :
-  let z := pow m n + pow p n in
-  let x := pow m n - pow p n in
-  z + x = 2 * pow m n /\
-  z - x = 2 * pow p n.
-Proof.
-  intros z x; unfold z, x; split; ring.
-Qed.
-
-Close Scope R_scope.
 
 (* ---------- Integer-parameter specialisation (m,p ∈ Z) ---------- *)
 Local Open Scope Z_scope.
 
-Lemma sum_diff_from_parameters_Z
+#[local] Lemma sum_diff_from_parameters_Z
       (n : nat) (m p : Z) :
   let z := m ^ Z.of_nat n + p ^ Z.of_nat n in
   let x := m ^ Z.of_nat n - p ^ Z.of_nat n in
@@ -87,7 +72,7 @@ Proof.
   intros z x; unfold z, x; split; ring.
 Qed.
 
-Corollary parity_condition_Z
+#[local] Corollary parity_condition_Z
           (n : nat) (m p : Z) :
   let z := m ^ Z.of_nat n + p ^ Z.of_nat n in
   let x := m ^ Z.of_nat n - p ^ Z.of_nat n in
@@ -103,7 +88,7 @@ Proof.
     rewrite Z.even_mul; simpl; reflexivity.
 Qed.
 
-Lemma no_parameters_if_parity_violation (n : nat) (z x : Z) :
+#[local] Lemma no_parameters_if_parity_violation (n : nat) (z x : Z) :
   Z.even (z + x) = false \/ Z.even (z - x) = false ->
   ~ (exists m p : Z,
         z = m ^ Z.of_nat n + p ^ Z.of_nat n /\
@@ -118,7 +103,7 @@ Proof.
     rewrite Z.even_mul in H2; simpl in H2. discriminate.
 Qed.
 
-Lemma no_parameters_if_odd (n : nat) (z x : Z) :
+#[local] Lemma no_parameters_if_odd (n : nat) (z x : Z) :
   Z.odd (z + x) = true \/ Z.odd (z - x) = true ->
   ~ (exists m p : Z,
         z = m ^ Z.of_nat n + p ^ Z.of_nat n /\
@@ -133,7 +118,7 @@ Proof.
     rewrite Z.odd_mul in H2; simpl in H2. discriminate.
 Qed.
 
-Lemma no_parameters_for_example :
+#[local] Lemma no_parameters_for_example :
   ~ (exists m p : Z,
         2%Z = m ^ Z.of_nat 3 + p ^ Z.of_nat 3 /\
         1%Z = m ^ Z.of_nat 3 - p ^ Z.of_nat 3).
@@ -147,7 +132,7 @@ Close Scope Z_scope.
 (* ---------- Elementary growth facts on naturals ---------- *)
 Local Open Scope nat_scope.
 
-Lemma pow2_gt_linear_shift (k : nat) :
+#[local] Lemma pow2_gt_linear_shift (k : nat) :
   2 ^ (k + 3) > 2 * (k + 3).
 Proof.
   induction k as [|k IH]; simpl.
@@ -166,7 +151,7 @@ Proof.
     + exact Htmp.
 Qed.
 
-Lemma pow2_gt_linear (n : nat) :
+#[local] Lemma pow2_gt_linear (n : nat) :
   3 <= n -> 2 ^ n > 2 * n.
 Proof.
   intros Hn.
@@ -176,7 +161,7 @@ Proof.
   apply pow2_gt_linear_shift.
 Qed.
 
-Lemma pow_eq_linear_cases (n : nat) :
+#[local] Lemma pow_eq_linear_cases (n : nat) :
   2 ^ n = 2 * n -> n = 0 \/ n = 1 \/ n = 2.
 Proof.
   destruct n as [|n].
@@ -191,7 +176,7 @@ Proof.
         rewrite H in Hgt. lia.
 Qed.
 
-Lemma pow_eq_linear_positive (n : nat) :
+#[local] Lemma pow_eq_linear_positive (n : nat) :
   2 ^ n = 2 * n -> n = 1 \/ n = 2.
 Proof.
   intro H.
@@ -201,21 +186,21 @@ Proof.
   - now right.
 Qed.
 
-Lemma pow_INR_natpow (k n : nat) :
+#[local] Lemma pow_INR_natpow (k n : nat) :
   pow (INR k) n = INR (k ^ n).
 Proof.
   rewrite pow_INR.
   reflexivity.
 Qed.
 
-Lemma covers_two_nat (n : nat) :
+#[local] Lemma covers_two_nat (n : nat) :
   pow 2 n = INR (2 ^ n).
 Proof.
   rewrite pow_INR.
   reflexivity.
 Qed.
 
-Lemma INR_two_mul_nat (n : nat) :
+#[local] Lemma INR_two_mul_nat (n : nat) :
   (2 * INR n)%R = INR (2 * n).
 Proof.
   rewrite mult_INR.
@@ -223,7 +208,7 @@ Proof.
   reflexivity.
 Qed.
 
-Lemma pow_pow_mul : forall (a : R) (n m : nat),
+#[local] Lemma pow_pow_mul : forall (a : R) (n m : nat),
   pow (pow a n) m = pow a (n * m).
 Proof.
   intros a n m.
@@ -244,6 +229,7 @@ Local Open Scope R_scope.
 
 Definition covers_with (o : R) (n : nat) := pow o n = 2 * INR n.
 
+(* PUBLIC *)
 Lemma covers_with_one_forces_two (o : R) :
   covers_with o 1%nat -> o = 2.
 Proof.
@@ -259,6 +245,7 @@ Proof.
   exact H.
 Qed.
 
+(* PUBLIC: the “bridge” *)
 Lemma two_real_normalizations_imply_nat_power_eq
       (o : R) (n m : nat) :
   covers_with o n ->
@@ -283,6 +270,7 @@ Proof.
   exact Hright.
 Qed.
 
+(* PUBLIC *)
 Lemma covers_with_two_characterisation (n : nat) :
   covers_with 2 n -> n = 1%nat \/ n = 2%nat.
 Proof.
@@ -295,6 +283,7 @@ Proof.
   assumption.
 Qed.
 
+(* PUBLIC *)
 Lemma maximum_coverage_as_theorem
       (o : R) :
   covers_with o 1%nat ->
@@ -319,12 +308,14 @@ Hypothesis normalization_equation :
     covers_with o n.
 Hypothesis coverage_one : covers_with o 1%nat.
 
+(* PUBLIC *)
 Lemma normalization_parameter_is_two : o = 2.
 Proof.
   destruct (maximum_coverage_as_theorem o coverage_one) as [_ Ho].
   exact Ho.
 Qed.
 
+(* PUBLIC *)
 Lemma normalization_forces_small_exponent :
     forall n x y z,
       (2 < n)%nat ->
@@ -339,24 +330,25 @@ Qed.
 
 End Global_Normalization.
 
-Lemma covers_two_one : covers_with 2 1%nat.
+#[local] Lemma covers_two_one : covers_with 2 1%nat.
 Proof.
   unfold covers_with; simpl.
   lra.
 Qed.
 
-Lemma covers_two_two : covers_with 2 2%nat.
+#[local] Lemma covers_two_two : covers_with 2 2%nat.
 Proof.
   unfold covers_with; simpl.
   lra.
 Qed.
 
-Lemma covers_two_only_small (n : nat) :
+#[local] Lemma covers_two_only_small (n : nat) :
   covers_with 2 n -> n = 1%nat \/ n = 2%nat.
 Proof.
   apply covers_with_two_characterisation.
 Qed.
 
+(* PUBLIC *)
 Corollary fermat_last_theorem_from_global_normalization :
   (forall (n x y z : nat),
       (2 < n)%nat ->
@@ -374,6 +366,7 @@ Proof.
   specialize (Hrest n Hcover) as [Hn1 | Hn2]; lia.
 Qed.
 
+(* PUBLIC *)
 Corollary fermat_last_theorem_via_maximum_coverage :
   (forall (n x y z : nat),
       (2 < n)%nat ->
@@ -394,14 +387,12 @@ Local Open Scope Z_scope.
 
 Record OPadic := { vp_o : nat -> Z }.
 
-Definition NatOddGreater1 (p : nat) : Prop := (1 < p)%nat.
+#[local] Definition NatOddGreater1 (p : nat) : Prop := (1 < p)%nat.
 
-
-
-Definition padic_equation (o : OPadic) (n : nat) : Prop :=
+#[local] Definition padic_equation (o : OPadic) (n : nat) : Prop :=
   forall p, NatOddGreater1 p -> Nat.odd p = true -> Z.of_nat n * vp_o o p = 0%Z.
 
-Lemma odd_primes_vanish_in_o
+#[local] Lemma odd_primes_vanish_in_o
       (o : OPadic) :
   padic_equation o 1%nat ->
   padic_equation o 2%nat ->
@@ -414,7 +405,7 @@ Proof.
   exact H1.
 Qed.
 
-Lemma two_adic_normalisation (o : OPadic) :
+#[local] Lemma two_adic_normalisation (o : OPadic) :
   Z.of_nat 1 * vp_o o 2%nat = 1%Z -> vp_o o 2%nat = 1%Z.
 Proof.
   intro H.
@@ -437,38 +428,6 @@ Proof.
   intros n Hn Hcover.
   apply covers_two_only_small in Hcover as [H1|H2]; lia.
 Qed.
-
-(* ---------- Binary scaling reformulation: n = (1/2) * 2^n ---------- *)
-
-Lemma two_pow_eq_two_mul_iff_shift (n : nat) :
-  (2 ^ n = 2 * n)%nat <-> (n = 2 ^ (n - 1))%nat.
-Proof.
-  destruct n as [|n].
-  - simpl. split; intro H; lia.
-  - split.
-    + intro H.
-      rewrite Nat.pow_succ_r' in H by lia.
-      apply Nat.mul_cancel_l in H; [|lia].
-      replace (S n - 1)%nat with n by lia.
-      symmetry.
-      exact H.
-    + intro H.
-      rewrite Nat.pow_succ_r' by lia.
-      replace (S n - 1)%nat with n in H by lia.
-      rewrite H.
-      reflexivity.
-Qed.
-
-Lemma binary_scaling_roots_only_one_two (n : nat) :
-  (n = 2 ^ (n - 1))%nat -> n = 1%nat \/ n = 2%nat.
-Proof.
-  intro Hshift.
-  apply two_pow_eq_two_mul_iff_shift in Hshift.
-  now apply pow_eq_linear_positive in Hshift.
-Qed.
-
-Goal forall n : nat, (n = 2 ^ (n - 1))%nat -> n = 1%nat \/ n = 2%nat.
-Proof.
-  exact binary_scaling_roots_only_one_two.
-Qed.
+End GlobalNormalization.
+Export GlobalNormalization.
 
