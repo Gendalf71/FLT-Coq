@@ -188,67 +188,36 @@ Proof.
 Qed.
 
 (*
-  Clarified reading of (2.10): the odd binomial core is factored over the
-  real domain as core = n * l^n.  This is a real scaling assumption/definition
-  for l, not an integer-divisibility assertion about the core.
+  The algebraic rewriting up to the odd-binomial core is checkable, but the
+  stronger manuscript claim that the odd core is always divisible by n is not
+  valid for arbitrary n.  The concrete n=6, m=1, p=1 core is
+  C(6,1)+C(6,3)+C(6,5)=6+20+6=32, so 6 does not divide it.
 *)
-Local Open Scope R_scope.
+Definition manuscript_odd_core_6_1_1 : nat :=
+  6 * ((1 ^ 6) ^ 5) * (1 ^ 6) +
+  20 * ((1 ^ 6) ^ 3) * ((1 ^ 6) ^ 3) +
+  6 * (1 ^ 6) * ((1 ^ 6) ^ 5).
 
-Definition real_core_factorization (n : nat) (core l : R) : Prop :=
-  (0 < n)%nat /\ core = INR n * pow l n.
-
-Lemma real_core_factorization_unique_value
-      (n : nat) (core l1 l2 : R) :
-  real_core_factorization n core l1 ->
-  real_core_factorization n core l2 ->
-  INR n * pow l1 n = INR n * pow l2 n.
+Lemma manuscript_odd_core_6_1_1_value : manuscript_odd_core_6_1_1 = 32.
 Proof.
-  intros [_ H1] [_ H2].
-  rewrite <- H1, <- H2.
   reflexivity.
 Qed.
 
-Lemma real_core_factorization_substitutes_y_power
-      (n : nat) (core l y : R) :
-  real_core_factorization n core l ->
-  pow y n = 2 * core ->
-  pow y n = 2 * INR n * pow l n.
+Lemma manuscript_claim_n_divides_core_not_general :
+  ~ Nat.divide 6 manuscript_odd_core_6_1_1.
 Proof.
-  intros [_ Hcore] Hy.
-  rewrite Hy, Hcore.
-  ring.
+  unfold manuscript_odd_core_6_1_1.
+  simpl.
+  intros [q Hq].
+  lia.
 Qed.
 
-Definition boundary_q_equation (n : nat) (q : R) : Prop :=
-  pow q n = INR (2 ^ n).
-
-Lemma boundary_q_two (n : nat) : boundary_q_equation n 2.
+Lemma symmetric_difference_n6_m1_p1 :
+  (((1 ^ 6 + 1 ^ 6) ^ 6 - (1 ^ 6 - 1 ^ 6) ^ 6)
+   = 2 * manuscript_odd_core_6_1_1)%nat.
 Proof.
-  unfold boundary_q_equation.
-  rewrite pow_INR.
   reflexivity.
 Qed.
-
-Record LocalScaleGlobalNormalization : Type := {
-  lsgn_n : nat;
-  lsgn_j : R;
-  lsgn_q : R;
-  lsgn_o : R;
-  lsgn_j_non_degenerate : 1 < lsgn_j;
-  lsgn_boundary_value : boundary_q_equation lsgn_n 2;
-  lsgn_global_normalization : lsgn_o = 2
-}.
-
-Lemma local_scale_record_uses_global_boundary
-      (s : LocalScaleGlobalNormalization) :
-  lsgn_o s = 2 /\ boundary_q_equation (lsgn_n s) 2.
-Proof.
-  split.
-  - exact (lsgn_global_normalization s).
-  - exact (lsgn_boundary_value s).
-Qed.
-
-Close Scope R_scope.
 
 (* ---------- Elementary growth facts on naturals ---------- *)
 Local Open Scope nat_scope.
