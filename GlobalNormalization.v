@@ -1,1 +1,1 @@
-CoefficientSymmetryObstruction.v
+LogarithmicZeroGapObstruction.v
